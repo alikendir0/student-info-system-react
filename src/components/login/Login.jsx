@@ -1,13 +1,30 @@
-import Head from "./LoginHead.jsx";
-import Body from "./LoginBody.jsx";
+import React from "react";
+import {
+  ChakraProvider,
+  Box,
+  Heading,
+  Text,
+  Button,
+  Center,
+  Flex,
+} from "@chakra-ui/react";
+import { useNavigate } from "react-router-dom";
 
-function Login() {
+const Login = () => {
+  const navigate = useNavigate();
+
   return (
-    <div>
-      <Head />
-      <Body />
-    </div>
+    <Center h="100vh">
+      <Flex>
+        <Box p={8} textAlign="center">
+          <Heading mb={4}>Öğrenci Bilgi Sistemine Hoş Geldiniz!</Heading>
+          <Button onClick={() => navigate("/student")} colorScheme="teal">
+            Giriş
+          </Button>
+        </Box>
+      </Flex>
+    </Center>
   );
-}
+};
 
 export default Login;

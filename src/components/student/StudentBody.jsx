@@ -16,14 +16,13 @@ import React, { useEffect } from "react";
 
 function StudentBody() {
   useEffect(() => {
-    // This function will be run when the component is loaded
     checkTableData();
     modalButtonProperties();
     assignmentModalButtonProperties();
     loadTableContents();
     killButtonDetector();
     buttonDetector();
-  }, []); // The empty array means this useEffect will run once on component mount
+  }, []);
 
   return (
     <>

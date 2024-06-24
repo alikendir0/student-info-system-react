@@ -1,15 +1,35 @@
-import "./OgrenciListesiStyle.css";
+import Table from "./StudentTable.jsx";
+import StudentControls from "./StudentControls.jsx";
 
-import Head from "./Head.jsx";
-import Body from "./StudentBody.jsx";
-import Nav from "./StudentNav.jsx";
+import { Box, Flex } from "@chakra-ui/react";
+import { useState, useEffect } from "react";
+import axios from "axios";
 
 function Student() {
+  const [students, setStudents] = useState([]);
+
+  const fetchStudents = async () => {
+    try {
+      const response = await axios.get(`http://localhost:3000/students`);
+      const data = response.data.data;
+      setStudents(data);
+      console.log(data);
+    } catch (error) {
+      console.error("Failed to fetch students:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchStudents();
+  }, []);
   return (
     <>
-      <Head />
-      <Body />
-      <Nav />
+      <Flex direction="column" align="right">
+        <Box position={"absolute"} alignSelf="flex-end" mb={-10}>
+          <StudentControls onStudentAdded={fetchStudents} />
+        </Box>
+        <Table students={students} />
+      </Flex>
     </>
   );
 }
