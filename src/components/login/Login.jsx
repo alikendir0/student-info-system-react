@@ -14,7 +14,7 @@ const Login = () => {
   const navigate = useNavigate();
 
   return (
-    <Center h="100vh">
+    <Center h="70vh">
       <Flex>
         <Box p={8} textAlign="center">
           <Heading mb={4}>Öğrenci Bilgi Sistemine Hoş Geldiniz!</Heading>

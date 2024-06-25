@@ -60,7 +60,6 @@ const StudentTable = ({ students }) => {
       );
       const responses = await Promise.all(deletePromises);
 
-      // Optional: Check responses for success/failure
       responses.forEach((response) => {
         if (!response.ok) {
           console.error(

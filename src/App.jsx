@@ -7,12 +7,12 @@ import Login from "./components/login/Login.jsx";
 import Navbar from "./components/Navbar/Navbar.jsx";
 
 import { Routes, Route, useNavigate } from "react-router-dom";
-import { ChakraProvider, Box } from "@chakra-ui/react";
+import { ChakraProvider, Box, Flex } from "@chakra-ui/react";
 
 const App = () => {
   return (
     <ChakraProvider>
-      <Box pt="64px">
+      <Box pt="50px">
         <Navbar />
         <Routes>
           <Route path="/" element={<Login />} />

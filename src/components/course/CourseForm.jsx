@@ -6,27 +6,26 @@ import {
   FormLabel,
   Input,
   useColorModeValue,
-  useColorMode,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import axios from "axios";
 
-function StudentForm({ onClose, onStudentAdded }) {
-  const [studentData, setStudentData] = useState({
-    name: "",
-    lastName: "",
-    idNo: "",
-    studentNo: "",
-    courses: [],
+function CourseForm({ onClose, onCourseAdded }) {
+  const [courseData, setCourseData] = useState({
+    code: "",
+    faculty: "",
+    time: "",
+    place: "",
+    instructor: "",
   });
 
   const handleAddClick = () => {
     axios
-      .post("http://localhost:3000/student", studentData)
+      .post("http://localhost:3000/course", courseData)
       .then((response) => {
         // Handle success
         console.log(response.data);
-        onStudentAdded();
+        onCourseAdded();
       })
       .catch((error) => {
         // Handle error
@@ -35,8 +34,8 @@ function StudentForm({ onClose, onStudentAdded }) {
   };
 
   const handleInputChange = (e, property) => {
-    setStudentData({
-      ...studentData,
+    setCourseData({
+      ...courseData,
       [property]: e.target.value,
     });
   };
@@ -49,55 +48,68 @@ function StudentForm({ onClose, onStudentAdded }) {
       p={2}
     >
       <FormControl>
-        <FormLabel htmlFor="student-name" textAlign={"center"}>
-          Öğrenci Adı
+        <FormLabel htmlFor="course-code" textAlign={"center"}>
+          Ders Kodu
         </FormLabel>
         <Input
-          id="student-name"
+          id="course-code"
           type="text"
           colorScheme="teal"
           textAlign={"center"}
           borderWidth="2px"
-          onChange={(e) => handleInputChange(e, "name")}
+          onChange={(e) => handleInputChange(e, "code")}
         />
       </FormControl>
       <FormControl>
-        <FormLabel htmlFor="student-lastname" textAlign={"center"}>
-          Öğrenci Soyadı
+        <FormLabel htmlFor="course-faculty" textAlign={"center"}>
+          Fakülte
         </FormLabel>
         <Input
-          id="student-name"
+          id="course-faculty"
           type="text"
           colorScheme="teal"
           textAlign={"center"}
           borderWidth="2px"
-          onChange={(e) => handleInputChange(e, "lastName")}
+          onChange={(e) => handleInputChange(e, "faculty")}
         />
       </FormControl>
       <FormControl>
-        <FormLabel htmlFor="student-id" textAlign={"center"}>
-          T.C. Kimlik Numarası
+        <FormLabel htmlFor="course-time" textAlign={"center"}>
+          Zaman
         </FormLabel>
         <Input
-          id="student-id"
+          id="course-time"
           type="text"
           colorScheme="teal"
           textAlign={"center"}
           borderWidth="2px"
-          onChange={(e) => handleInputChange(e, "idNo")}
+          onChange={(e) => handleInputChange(e, "time")}
         />
       </FormControl>
       <FormControl>
-        <FormLabel htmlFor="student-no" textAlign={"center"}>
-          Öğrenci Numarası
+        <FormLabel htmlFor="course-place" textAlign={"center"}>
+          Sınıf
         </FormLabel>
         <Input
-          id="student-no"
+          id="course-place"
           type="text"
           colorScheme="teal"
           textAlign={"center"}
           borderWidth="2px"
-          onChange={(e) => handleInputChange(e, "studentNo")}
+          onChange={(e) => handleInputChange(e, "place")}
+        />
+      </FormControl>
+      <FormControl>
+        <FormLabel htmlFor="course-instructor" textAlign={"center"}>
+          Öğretim Görevlisi
+        </FormLabel>
+        <Input
+          id="course-instructor"
+          type="text"
+          colorScheme="teal"
+          textAlign={"center"}
+          borderWidth="2px"
+          onChange={(e) => handleInputChange(e, "instructor")}
         />
       </FormControl>
       <Button variant="solid" colorScheme="teal" onClick={handleAddClick}>
@@ -112,4 +124,4 @@ function StudentForm({ onClose, onStudentAdded }) {
   );
 }
 
-export default StudentForm;
+export default CourseForm;

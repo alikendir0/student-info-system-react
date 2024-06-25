@@ -6,7 +6,6 @@ import {
   Avatar,
   HStack,
   Text,
-  IconButton,
   Button,
   Menu,
   MenuButton,
@@ -16,11 +15,13 @@ import {
   useDisclosure,
   useColorModeValue,
   Stack,
+  useColorMode,
 } from "@chakra-ui/react";
 
 const Navbar = () => {
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { colorMode, toggleColorMode } = useColorMode();
 
   const signOut = async () => {
     navigate("/login");
@@ -33,8 +34,9 @@ const Navbar = () => {
       pos="fixed"
       w="100%"
       zIndex="999"
-      top={0} // Add this line
-      left={0} // Add this line
+      top={0}
+      left={0}
+      position={"sticky"}
     >
       <Flex
         h={16}
@@ -72,6 +74,9 @@ const Navbar = () => {
             <MenuList>
               <MenuItem>Profile</MenuItem>
               <MenuItem>Settings</MenuItem>
+              <MenuItem onClick={toggleColorMode}>
+                {colorMode === "light" ? "Dark" : "Light"} Mode
+              </MenuItem>
               <MenuDivider />
               <MenuItem onClick={signOut}>Sign out</MenuItem>
             </MenuList>

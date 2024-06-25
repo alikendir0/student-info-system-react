@@ -1,12 +1,8 @@
 import React, { useState } from "react";
 import { Button, Stack, Box } from "@chakra-ui/react";
-import StudentForm from "./StudentForm";
+import CourseForm from "./CourseForm";
 
-function StudentControls({
-  onStudentAdded,
-  onStudentDeleted,
-  onInspectCourses,
-}) {
+function CourseControls({ onCourseAdded, onCourseDeleted }) {
   const [showButtons, setShowButtons] = useState(false);
   const [showForm, setShowForm] = useState(false);
 
@@ -26,27 +22,23 @@ function StudentControls({
   return (
     <Stack direction="column" spacing={2} align="center">
       <Button colorScheme="blue" onClick={handleEditClick}>
-        Öğrenci Kontrolü
+        Ders Kontrolü
       </Button>
       {showButtons && (
         <>
           <Button colorScheme="green" onClick={toggleFormVisibility}>
             Ekle
           </Button>
-          <Button colorScheme="red" onClick={onStudentDeleted}>
+          <Button colorScheme="red" onClick={onCourseDeleted}>
             Sil
           </Button>
-          <Button colorScheme="teal" onClick={onInspectCourses}>
-            Ders Atama
-          </Button>
-          <Button colorScheme="orange">Ders Sıfırlama</Button>
         </>
       )}
-      <Box position={"absolute"} borderRadius={"md"} backgroundColor="teal">
+      <Box position={"absolute"} borderRadius={"md"}>
         {showForm && (
-          <StudentForm
+          <CourseForm
             onClose={toggleFormVisibility}
-            onStudentAdded={onStudentAdded}
+            onCourseAdded={onCourseAdded}
           />
         )}
       </Box>
@@ -54,4 +46,4 @@ function StudentControls({
   );
 }
 
-export default StudentControls;
+export default CourseControls;
