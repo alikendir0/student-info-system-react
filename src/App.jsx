@@ -12,7 +12,7 @@ import { ChakraProvider, Box, Flex } from "@chakra-ui/react";
 const App = () => {
   return (
     <ChakraProvider>
-      <Box pt="50px">
+      <Box pt="20px">
         <Navbar />
         <Routes>
           <Route path="/" element={<Login />} />

@@ -6,6 +6,7 @@ function StudentControls({
   onStudentAdded,
   onStudentDeleted,
   onInspectCourses,
+  onResetSelected,
 }) {
   const [showButtons, setShowButtons] = useState(false);
   const [showForm, setShowForm] = useState(false);
@@ -39,7 +40,9 @@ function StudentControls({
           <Button colorScheme="teal" onClick={onInspectCourses}>
             Ders Atama
           </Button>
-          <Button colorScheme="orange">Ders Sıfırlama</Button>
+          <Button colorScheme="orange" onClick={onResetSelected}>
+            Ders Sıfırlama
+          </Button>
         </>
       )}
       <Box position={"absolute"} borderRadius={"md"} backgroundColor="teal">

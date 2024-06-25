@@ -164,6 +164,34 @@ function Student() {
     setCheckedIDs([]);
   };
 
+  const deleteSelectedCourses = async () => {
+    try {
+      const response = await axios.delete(
+        `http://localhost:3000/students/delete/courses`,
+        {
+          data: { ids: checkedIDs },
+        }
+      );
+      console.log(response.data);
+      fetchCourses();
+      resetCheckboxes();
+    } catch (error) {
+      console.error("Error deleting selected courses:", error);
+    }
+  };
+
+  const handleDerslerClick = async (studentID) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:3000/student/courses/${studentID}`
+      );
+      const data = response.data.data;
+      console.log(data);
+    } catch (error) {
+      console.error("Failed to fetch students:", error);
+    }
+  };
+
   return (
     <>
       <Flex direction="column" mt={8} height="100vh">
@@ -172,6 +200,7 @@ function Student() {
             onStudentAdded={fetchStudents}
             onStudentDeleted={deleteSelected}
             onInspectCourses={handleOpenModal}
+            onResetSelected={deleteSelectedCourses}
           />
         </Box>
         <Flex
@@ -268,7 +297,11 @@ function Student() {
                       <Td textAlign={"center"}>{student.idNo}</Td>
                       <Td textAlign={"center"}>{student.studentNo}</Td>
                       <Td textAlign={"center"}>
-                        <button className="dersler" type="button">
+                        <button
+                          className="dersler"
+                          type="button"
+                          onClick={() => handleDerslerClick(student.id)}
+                        >
                           Dersler
                         </button>
                       </Td>
