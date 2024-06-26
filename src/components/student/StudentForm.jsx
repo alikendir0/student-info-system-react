@@ -11,7 +11,7 @@ import {
 import { useState } from "react";
 import axios from "axios";
 
-function StudentForm({ onClose, onStudentAdded }) {
+function StudentForm({ onClose, onStudentAdded, Toast }) {
   const [studentData, setStudentData] = useState({
     name: "",
     lastName: "",
@@ -24,13 +24,12 @@ function StudentForm({ onClose, onStudentAdded }) {
     axios
       .post("http://localhost:3000/student", studentData)
       .then((response) => {
-        // Handle success
         console.log(response.data);
         onStudentAdded();
+        Toast("Başarıyla Eklendi!", "success");
       })
       .catch((error) => {
-        // Handle error
-        console.error(error);
+        Toast(error.response.data.data[0].message, "error");
       });
   };
 

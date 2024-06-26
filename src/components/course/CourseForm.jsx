@@ -10,7 +10,7 @@ import {
 import { useState } from "react";
 import axios from "axios";
 
-function CourseForm({ onClose, onCourseAdded }) {
+function CourseForm({ onClose, onCourseAdded, Toast }) {
   const [courseData, setCourseData] = useState({
     code: "",
     faculty: "",
@@ -23,12 +23,12 @@ function CourseForm({ onClose, onCourseAdded }) {
     axios
       .post("http://localhost:3000/course", courseData)
       .then((response) => {
-        // Handle success
         console.log(response.data);
         onCourseAdded();
+        Toast("Başarıyla Eklendi!", "success");
       })
       .catch((error) => {
-        // Handle error
+        Toast(error.response.data.data[0].message, "error");
         console.error(error);
       });
   };

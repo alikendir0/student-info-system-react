@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Button, Stack, Box } from "@chakra-ui/react";
 import CourseForm from "./CourseForm";
 
-function CourseControls({ onCourseAdded, onCourseDeleted }) {
+function CourseControls({ onCourseAdded, onCourseDeleted, Toast }) {
   const [showButtons, setShowButtons] = useState(false);
   const [showForm, setShowForm] = useState(false);
 
@@ -39,6 +39,7 @@ function CourseControls({ onCourseAdded, onCourseDeleted }) {
           <CourseForm
             onClose={toggleFormVisibility}
             onCourseAdded={onCourseAdded}
+            Toast={Toast}
           />
         )}
       </Box>

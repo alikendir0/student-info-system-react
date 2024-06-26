@@ -7,6 +7,7 @@ function StudentControls({
   onStudentDeleted,
   onInspectCourses,
   onResetSelected,
+  Toast,
 }) {
   const [showButtons, setShowButtons] = useState(false);
   const [showForm, setShowForm] = useState(false);
@@ -50,6 +51,7 @@ function StudentControls({
           <StudentForm
             onClose={toggleFormVisibility}
             onStudentAdded={onStudentAdded}
+            Toast={Toast}
           />
         )}
       </Box>
