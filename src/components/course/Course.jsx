@@ -157,11 +157,16 @@ function Course() {
                               onChange={() => handleCheck(index, course.id)}
                             />
                           </Td>
-                          <Td textAlign={"center"}>{course.code}</Td>
+                          <Td textAlign={"center"}>{course.courseCode}</Td>
                           <Td textAlign={"center"}>{course.faculty}</Td>
-                          <Td textAlign={"center"}>{course.time}</Td>
+                          <Td textAlign={"center"}>
+                            {course.hour} {course.day}
+                          </Td>
                           <Td textAlign={"center"}>{course.place}</Td>
-                          <Td textAlign={"center"}>{course.instructor}</Td>
+                          <Td textAlign={"center"}>
+                            {course.instructor.firstName}{" "}
+                            {course.instructor.lastName}
+                          </Td>
                         </Tr>
                       ))}
                     </Tbody>

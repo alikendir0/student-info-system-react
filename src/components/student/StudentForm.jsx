@@ -13,14 +13,14 @@ import axios from "axios";
 
 function StudentForm({ onClose, onStudentAdded, Toast }) {
   const [studentData, setStudentData] = useState({
-    name: "",
+    firstName: "",
     lastName: "",
-    idNo: "",
+    id: "",
     studentNo: "",
-    courses: [],
   });
 
   const handleAddClick = () => {
+    console.log(studentData);
     axios
       .post("http://localhost:3000/student", studentData)
       .then((response) => {
@@ -57,7 +57,7 @@ function StudentForm({ onClose, onStudentAdded, Toast }) {
           colorScheme="teal"
           textAlign={"center"}
           borderWidth="2px"
-          onChange={(e) => handleInputChange(e, "name")}
+          onChange={(e) => handleInputChange(e, "firstName")}
         />
       </FormControl>
       <FormControl>
@@ -83,7 +83,7 @@ function StudentForm({ onClose, onStudentAdded, Toast }) {
           colorScheme="teal"
           textAlign={"center"}
           borderWidth="2px"
-          onChange={(e) => handleInputChange(e, "idNo")}
+          onChange={(e) => handleInputChange(e, "id")}
         />
       </FormControl>
       <FormControl>

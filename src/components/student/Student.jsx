@@ -105,7 +105,7 @@ function Student() {
     setCheckedState(newState);
 
     const newCheckedIDs = !allChecked
-      ? students.map((student) => student.id)
+      ? students.map((student) => student.studentNo)
       : [];
     setCheckedIDs(newCheckedIDs);
     console.log(newCheckedIDs);
@@ -296,11 +296,11 @@ function Student() {
                                       e.stopPropagation();
                                       deleteSelectedCourse(
                                         coursesData.id,
-                                        course
+                                        course.courseID
                                       );
                                     }}
                                   />
-                                  {course}
+                                  {course.courseCode}
                                 </Td>
                               </Tr>
                             ))}
@@ -344,11 +344,16 @@ function Student() {
                                   }
                                 />
                               </Td>
-                              <Td textAlign={"center"}>{course.code}</Td>
+                              <Td textAlign={"center"}>{course.courseCode}</Td>
                               <Td textAlign={"center"}>{course.faculty}</Td>
-                              <Td textAlign={"center"}>{course.time}</Td>
+                              <Td textAlign={"center"}>
+                                {course.hour} {course.day}
+                              </Td>
                               <Td textAlign={"center"}>{course.place}</Td>
-                              <Td textAlign={"center"}>{course.instructor}</Td>
+                              <Td textAlign={"center"}>
+                                {course.instructor.firstName}{" "}
+                                {course.instructor.lastName}
+                              </Td>
                             </Tr>
                           ))}
                         </Tbody>
@@ -395,18 +400,22 @@ function Student() {
                           <Td textAlign={"center"}>
                             <Checkbox
                               isChecked={checkedState[index]}
-                              onChange={() => handleCheck(index, student.id)}
+                              onChange={() =>
+                                handleCheck(index, student.studentNo)
+                              }
                             />
                           </Td>
-                          <Td textAlign={"center"}>{student.name}</Td>
+                          <Td textAlign={"center"}>{student.firstName}</Td>
                           <Td textAlign={"center"}>{student.lastName}</Td>
-                          <Td textAlign={"center"}>{student.idNo}</Td>
+                          <Td textAlign={"center"}>{student.id}</Td>
                           <Td textAlign={"center"}>{student.studentNo}</Td>
                           <Td textAlign={"center"}>
                             <Button
                               className="dersler"
                               type="button"
-                              onClick={() => handleDerslerClick(student.id)}
+                              onClick={() =>
+                                handleDerslerClick(student.studentNo)
+                              }
                             >
                               Dersler
                             </Button>

@@ -103,14 +103,14 @@ const StudentTable = ({ students }) => {
             </Thead>
             <Tbody>
               {students.map((student, index) => (
-                <Tr key={student.id}>
+                <Tr key={student.idNo}>
                   <Td>
                     <Checkbox
                       isChecked={checkedState[index]}
                       onChange={() => handleCheck(index, student.idNo)}
                     />
                   </Td>
-                  <Td>{student.name}</Td>
+                  <Td>{student.fistName}</Td>
                   <Td>{student.lastName}</Td>
                   <Td>{student.idNo}</Td>
                   <Td>{student.studentNo}</Td>
