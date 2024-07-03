@@ -1,3 +1,5 @@
+import InstructorControls from "./InstructorControls";
+
 import {
   Flex,
   Box,
@@ -58,6 +60,33 @@ function Instructor() {
     }
   };
 
+  const deleteSelected = async () => {
+    try {
+      const deletePromises = checkedIDs.map((instructorID) =>
+        fetch(`http://localhost:3000/instructor/${instructorID}`, {
+          method: "DELETE",
+        })
+      );
+      const responses = await Promise.all(deletePromises);
+
+      responses.forEach((response) => {
+        if (!response.ok) {
+          console.error(
+            `Failed to delete instructor with ID: ${response.url
+              .split("/")
+              .pop()}`
+          );
+        }
+      });
+      fetchInstructors();
+      setCheckedIDs([]);
+      Toast("Başarıyla Silindi!", "success");
+    } catch (error) {
+      Toast("Hata!", "error");
+      console.error("Error deleting selected instructors:", error);
+    }
+  };
+
   useEffect(() => {
     fetchInstructors();
   }, []);
@@ -72,7 +101,7 @@ function Instructor() {
     setCheckedState(newState);
 
     const newCheckedIDs = !allChecked
-      ? instructors.map((instructor) => instructor.id)
+      ? instructors.map((instructor) => instructor.instructorID)
       : [];
     setCheckedIDs(newCheckedIDs);
   };
@@ -99,6 +128,13 @@ function Instructor() {
     <>
       {isLoaded ? (
         <Flex direction="column" align="right" mt={8}>
+          <Box position={"absolute"} alignSelf="flex-end" mr={6}>
+            <InstructorControls
+              onInstructorAdded={fetchInstructors}
+              onInstructorDeleted={deleteSelected}
+              Toast={Toast}
+            />
+          </Box>
           <Box position={"absolute"} alignSelf="flex-end" mr={6}></Box>
           <Flex
             mt={6}
@@ -134,7 +170,9 @@ function Instructor() {
                           <Td textAlign={"center"}>
                             <Checkbox
                               isChecked={checkedState[index]}
-                              onChange={() => handleCheck(index, instructor.id)}
+                              onChange={() =>
+                                handleCheck(index, instructor.instructorNo)
+                              }
                             />
                           </Td>
                           <Td textAlign={"center"}>{instructor.firstName}</Td>
@@ -150,7 +188,7 @@ function Instructor() {
                 </TableContainer>
               ) : (
                 <Box textAlign="center" p={5}>
-                  Hiçbir Öğrenci Eklenmedi!
+                  Hiçbir Öğretim Üyesi Eklenmedi!
                 </Box>
               )}
             </Box>

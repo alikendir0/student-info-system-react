@@ -131,7 +131,7 @@ function Section() {
               {sections.length !== 0 ? (
                 <TableContainer>
                   <Table variant="striped" colorScheme="teal">
-                    <TableCaption> Ders Listesi</TableCaption>
+                    <TableCaption> Sınıf Listesi</TableCaption>
                     <Thead>
                       <Tr>
                         <Th textAlign={"center"}>
@@ -148,6 +148,8 @@ function Section() {
                         <Th textAlign={"center"}>Zaman</Th>
                         <Th textAlign={"center"}>Sınıf</Th>
                         <Th textAlign={"center"}>Öğretim Görevlisi</Th>
+                        <Th textAlign={"center"}>Kapasite</Th>
+                        <Th textAlign={"center"}>Öğrenci Sayısı</Th>
                       </Tr>
                     </Thead>
                     <Tbody>
@@ -169,6 +171,8 @@ function Section() {
                             {section.instructor.firstName}{" "}
                             {section.instructor.lastName}
                           </Td>
+                          <Td textAlign={"center"}>{section.capacity}</Td>
+                          <Td textAlign={"center"}>{section.noStudents}</Td>
                         </Tr>
                       ))}
                     </Tbody>
@@ -176,7 +180,7 @@ function Section() {
                 </TableContainer>
               ) : (
                 <Box textAlign="center" p={5}>
-                  Hiçbir Ders Eklenmedi!
+                  Hiçbir Sınıf Eklenmedi!
                 </Box>
               )}
             </Box>
