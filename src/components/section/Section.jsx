@@ -149,7 +149,6 @@ function Section() {
                         <Th textAlign={"center"}>Sınıf</Th>
                         <Th textAlign={"center"}>Öğretim Görevlisi</Th>
                         <Th textAlign={"center"}>Kapasite</Th>
-                        <Th textAlign={"center"}>Öğrenci Sayısı</Th>
                       </Tr>
                     </Thead>
                     <Tbody>
@@ -171,8 +170,9 @@ function Section() {
                             {section.instructor.firstName}{" "}
                             {section.instructor.lastName}
                           </Td>
-                          <Td textAlign={"center"}>{section.capacity}</Td>
-                          <Td textAlign={"center"}>{section.noStudents}</Td>
+                          <Td textAlign={"center"}>
+                            {section.noStudents}/{section.capacity}
+                          </Td>
                         </Tr>
                       ))}
                     </Tbody>

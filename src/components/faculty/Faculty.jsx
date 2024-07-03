@@ -156,8 +156,8 @@ function Faculty() {
                             Hepsini Seç
                           </button>
                         </Th>
-                        <Th textAlign={"center"}>Fakülte Kodu</Th>
                         <Th textAlign={"center"}>Fakülte Adı</Th>
+                        <Th textAlign={"center"}>Fakülte Kodu</Th>
                       </Tr>
                     </Thead>
                     <Tbody>
@@ -169,8 +169,8 @@ function Faculty() {
                               onChange={() => handleCheck(index, faculty.id)}
                             />
                           </Td>
-                          <Td textAlign={"center"}>{faculty.id}</Td>
                           <Td textAlign={"center"}>{faculty.name}</Td>
+                          <Td textAlign={"center"}>{faculty.id}</Td>
                         </Tr>
                       ))}
                     </Tbody>
