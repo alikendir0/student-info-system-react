@@ -29,7 +29,7 @@ function StudentForm({ onClose, onStudentAdded, Toast }) {
         Toast("Başarıyla Eklendi!", "success");
       })
       .catch((error) => {
-        Toast(error.response.data.data[0].message, "error");
+        Toast(error.response.data.message, "error");
       });
   };
 

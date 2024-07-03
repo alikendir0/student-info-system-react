@@ -10,8 +10,8 @@ import {
 import { useState } from "react";
 import axios from "axios";
 
-function CourseForm({ onClose, onCourseAdded, Toast }) {
-  const [courseData, setCourseData] = useState({
+function SectionForm({ onClose, onSectionAdded, Toast }) {
+  const [sectionData, setSectionData] = useState({
     code: "",
     faculty: "",
     time: "",
@@ -21,10 +21,10 @@ function CourseForm({ onClose, onCourseAdded, Toast }) {
 
   const handleAddClick = () => {
     axios
-      .post("http://localhost:3000/course", courseData)
+      .post("http://localhost:3000/section", sectionData)
       .then((response) => {
         console.log(response.data);
-        onCourseAdded();
+        onSectionAdded();
         Toast("Başarıyla Eklendi!", "success");
       })
       .catch((error) => {
@@ -34,8 +34,8 @@ function CourseForm({ onClose, onCourseAdded, Toast }) {
   };
 
   const handleInputChange = (e, property) => {
-    setCourseData({
-      ...courseData,
+    setSectionData({
+      ...sectionData,
       [property]: e.target.value,
     });
   };
@@ -48,11 +48,11 @@ function CourseForm({ onClose, onCourseAdded, Toast }) {
       p={2}
     >
       <FormControl>
-        <FormLabel htmlFor="course-code" textAlign={"center"}>
+        <FormLabel htmlFor="section-code" textAlign={"center"}>
           Ders Kodu
         </FormLabel>
         <Input
-          id="course-code"
+          id="section-code"
           type="text"
           colorScheme="teal"
           textAlign={"center"}
@@ -61,11 +61,11 @@ function CourseForm({ onClose, onCourseAdded, Toast }) {
         />
       </FormControl>
       <FormControl>
-        <FormLabel htmlFor="course-faculty" textAlign={"center"}>
+        <FormLabel htmlFor="section-faculty" textAlign={"center"}>
           Fakülte
         </FormLabel>
         <Input
-          id="course-faculty"
+          id="section-faculty"
           type="text"
           colorScheme="teal"
           textAlign={"center"}
@@ -74,11 +74,11 @@ function CourseForm({ onClose, onCourseAdded, Toast }) {
         />
       </FormControl>
       <FormControl>
-        <FormLabel htmlFor="course-time" textAlign={"center"}>
+        <FormLabel htmlFor="section-time" textAlign={"center"}>
           Zaman
         </FormLabel>
         <Input
-          id="course-time"
+          id="section-time"
           type="text"
           colorScheme="teal"
           textAlign={"center"}
@@ -87,11 +87,11 @@ function CourseForm({ onClose, onCourseAdded, Toast }) {
         />
       </FormControl>
       <FormControl>
-        <FormLabel htmlFor="course-place" textAlign={"center"}>
+        <FormLabel htmlFor="section-place" textAlign={"center"}>
           Sınıf
         </FormLabel>
         <Input
-          id="course-place"
+          id="section-place"
           type="text"
           colorScheme="teal"
           textAlign={"center"}
@@ -100,11 +100,11 @@ function CourseForm({ onClose, onCourseAdded, Toast }) {
         />
       </FormControl>
       <FormControl>
-        <FormLabel htmlFor="course-instructor" textAlign={"center"}>
+        <FormLabel htmlFor="section-instructor" textAlign={"center"}>
           Öğretim Görevlisi
         </FormLabel>
         <Input
-          id="course-instructor"
+          id="section-instructor"
           type="text"
           colorScheme="teal"
           textAlign={"center"}
@@ -124,4 +124,4 @@ function CourseForm({ onClose, onCourseAdded, Toast }) {
   );
 }
 
-export default CourseForm;
+export default SectionForm;

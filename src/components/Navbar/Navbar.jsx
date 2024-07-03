@@ -68,8 +68,11 @@ const Navbar = () => {
             <Button variant="ghost" onClick={() => navigate("/student")}>
               Öğrenciler
             </Button>
-            <Button variant="ghost" onClick={() => navigate("/course")}>
+            <Button variant="ghost" onClick={() => navigate("/section")}>
               Dersler
+            </Button>
+            <Button variant="ghost" onClick={() => navigate("/instructor")}>
+              Öğretim Üyeleri
             </Button>
           </HStack>
         </HStack>

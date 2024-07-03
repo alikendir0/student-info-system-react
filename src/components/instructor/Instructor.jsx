@@ -1,0 +1,166 @@
+import {
+  Flex,
+  Box,
+  Table,
+  TableCaption,
+  Thead,
+  Tbody,
+  Tr,
+  Th,
+  Td,
+  TableContainer,
+  Checkbox,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  useDisclosure,
+  Button,
+  CloseButton,
+  useToast,
+  Spinner,
+} from "@chakra-ui/react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+
+function Instructor() {
+  const toast = useToast();
+  const toastIdRef = React.useRef();
+
+  const [instructors, setInstructors] = useState([]);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [checkedState, setCheckedState] = useState([]);
+  const [checkedIDs, setCheckedIDs] = useState([]);
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  function Toast(e, status) {
+    toastIdRef.current = toast({
+      title: e,
+      status: status,
+      isClosable: true,
+    });
+  }
+
+  const fetchInstructors = async () => {
+    setIsLoaded(false);
+    try {
+      const response = await axios.get(`http://localhost:3000/instructors`);
+      const data = response.data.data;
+      setInstructors(data);
+      setIsLoaded(true);
+    } catch (error) {
+      Toast("Bağlantı Hatası!", "error");
+      console.error("Failed to fetch instructors:", error);
+      setTimeout(fetchInstructors, 5000);
+    }
+  };
+
+  useEffect(() => {
+    fetchInstructors();
+  }, []);
+
+  useEffect(() => {
+    setCheckedState(new Array(instructors.length).fill(false));
+  }, [instructors]);
+
+  const handleSelectAll = () => {
+    const allChecked = checkedState.every(Boolean);
+    const newState = new Array(instructors.length).fill(!allChecked);
+    setCheckedState(newState);
+
+    const newCheckedIDs = !allChecked
+      ? instructors.map((instructor) => instructor.id)
+      : [];
+    setCheckedIDs(newCheckedIDs);
+  };
+
+  const handleCheck = (position, instructorID) => {
+    const updatedCheckedState = checkedState.map((item, index) =>
+      index === position ? !item : item
+    );
+    setCheckedState(updatedCheckedState);
+
+    const updatedCheckedIDs = [...checkedIDs];
+    if (updatedCheckedState[position]) {
+      updatedCheckedIDs.push(instructorID);
+    } else {
+      const index = updatedCheckedIDs.indexOf(instructorID);
+      if (index > -1) {
+        updatedCheckedIDs.splice(index, 1);
+      }
+    }
+    setCheckedIDs(updatedCheckedIDs);
+  };
+
+  return (
+    <>
+      {isLoaded ? (
+        <Flex direction="column" align="right" mt={8}>
+          <Box position={"absolute"} alignSelf="flex-end" mr={6}></Box>
+          <Flex
+            mt={6}
+            justifyContent="center"
+            alignItems="flex-start"
+            height="100vh"
+          >
+            <Box mt={16}>
+              {instructors.length !== 0 ? (
+                <TableContainer>
+                  <Table variant="striped" colorScheme="teal">
+                    <TableCaption>Öğretim Üyeleri</TableCaption>
+                    <Thead>
+                      <Tr>
+                        <Th textAlign={"center"}>
+                          <button
+                            onClick={handleSelectAll}
+                            className="select-all-button"
+                            type="button"
+                          >
+                            Hepsini Seç
+                          </button>
+                        </Th>
+                        <Th textAlign={"center"}>Ad</Th>
+                        <Th textAlign={"center"}>Soyad</Th>
+                        <Th textAlign={"center"}>T.C. Kimlik Numarası</Th>
+                        <Th textAlign={"center"}>Öğretim Numarası</Th>
+                      </Tr>
+                    </Thead>
+                    <Tbody>
+                      {instructors.map((instructor, index) => (
+                        <Tr key={instructor.id}>
+                          <Td textAlign={"center"}>
+                            <Checkbox
+                              isChecked={checkedState[index]}
+                              onChange={() => handleCheck(index, instructor.id)}
+                            />
+                          </Td>
+                          <Td textAlign={"center"}>{instructor.firstName}</Td>
+                          <Td textAlign={"center"}>{instructor.lastName}</Td>
+                          <Td textAlign={"center"}>{instructor.id}</Td>
+                          <Td textAlign={"center"}>
+                            {instructor.instructorNo || "-"}
+                          </Td>
+                        </Tr>
+                      ))}
+                    </Tbody>
+                  </Table>
+                </TableContainer>
+              ) : (
+                <Box textAlign="center" p={5}>
+                  Hiçbir Öğrenci Eklenmedi!
+                </Box>
+              )}
+            </Box>
+          </Flex>
+        </Flex>
+      ) : (
+        <Spinner size="xl" mt={"100"} />
+      )}
+    </>
+  );
+}
+
+export default Instructor;

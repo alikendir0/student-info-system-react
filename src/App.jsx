@@ -1,8 +1,9 @@
 import "./App.css";
 import "./index.css";
 
-import Course from "./components/course/Course.jsx";
+import Section from "./components/section/Section.jsx";
 import Student from "./components/student/Student.jsx";
+import Instructor from "./components/instructor/Instructor.jsx";
 import Login from "./components/login/Login.jsx";
 import Navbar from "./components/Navbar/Navbar.jsx";
 
@@ -17,7 +18,8 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/student" element={<Student />} />
-          <Route path="/course" element={<Course />} />
+          <Route path="/section" element={<Section />} />
+          <Route path="/instructor" element={<Instructor />} />
         </Routes>
       </Box>
     </ChakraProvider>

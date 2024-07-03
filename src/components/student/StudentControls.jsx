@@ -5,7 +5,7 @@ import StudentForm from "./StudentForm";
 function StudentControls({
   onStudentAdded,
   onStudentDeleted,
-  onInspectCourses,
+  onInspectSections,
   onResetSelected,
   Toast,
 }) {
@@ -38,7 +38,7 @@ function StudentControls({
           <Button colorScheme="red" onClick={onStudentDeleted}>
             Sil
           </Button>
-          <Button colorScheme="teal" onClick={onInspectCourses}>
+          <Button colorScheme="teal" onClick={onInspectSections}>
             Ders Atama
           </Button>
           <Button colorScheme="orange" onClick={onResetSelected}>

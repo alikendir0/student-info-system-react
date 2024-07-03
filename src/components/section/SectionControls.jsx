@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Button, Stack, Box } from "@chakra-ui/react";
-import CourseForm from "./CourseForm";
+import SectionForm from "./SectionForm";
 
-function CourseControls({ onCourseAdded, onCourseDeleted, Toast }) {
+function SectionControls({ onSectionAdded, onSectionDeleted, Toast }) {
   const [showButtons, setShowButtons] = useState(false);
   const [showForm, setShowForm] = useState(false);
 
@@ -29,16 +29,16 @@ function CourseControls({ onCourseAdded, onCourseDeleted, Toast }) {
           <Button colorScheme="green" onClick={toggleFormVisibility}>
             Ekle
           </Button>
-          <Button colorScheme="red" onClick={onCourseDeleted}>
+          <Button colorScheme="red" onClick={onSectionDeleted}>
             Sil
           </Button>
         </>
       )}
       <Box position={"absolute"} borderRadius={"md"}>
         {showForm && (
-          <CourseForm
+          <SectionForm
             onClose={toggleFormVisibility}
-            onCourseAdded={onCourseAdded}
+            onSectionAdded={onSectionAdded}
             Toast={Toast}
           />
         )}
@@ -47,4 +47,4 @@ function CourseControls({ onCourseAdded, onCourseDeleted, Toast }) {
   );
 }
 
-export default CourseControls;
+export default SectionControls;

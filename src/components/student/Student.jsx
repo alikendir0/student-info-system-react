@@ -33,12 +33,12 @@ function Student() {
   const [students, setStudents] = useState([]);
   const [checkedState, setCheckedState] = useState([]);
   const [checkedIDs, setCheckedIDs] = useState([]);
-  const [checkedCourseState, setCheckedCourseState] = useState([]);
-  const [checkedCourseIDs, setCheckedCourseIDs] = useState([]);
+  const [checkedSectionState, setCheckedSectionState] = useState([]);
+  const [checkedSectionIDs, setCheckedSectionIDs] = useState([]);
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [courses, setCourses] = useState([]);
-  const [isCoursesModalOpen, setIsCoursesModalOpen] = useState(false);
-  const [coursesData, setCoursesData] = useState({
+  const [sections, setSections] = useState([]);
+  const [isSectionsModalOpen, setIsSectionsModalOpen] = useState(false);
+  const [sectionsData, setSectionsData] = useState({
     id: "",
     data: [],
   });
@@ -58,8 +58,8 @@ function Student() {
   }, [students]);
 
   useEffect(() => {
-    setCheckedCourseState(new Array(courses.length).fill(false));
-  }, [courses]);
+    setCheckedSectionState(new Array(sections.length).fill(false));
+  }, [sections]);
 
   useEffect(() => {
     fetchStudents();
@@ -79,20 +79,20 @@ function Student() {
     }
   };
 
-  const fetchCourses = async () => {
+  const fetchSections = async () => {
     try {
-      const response = await axios.get(`http://localhost:3000/courses`);
+      const response = await axios.get(`http://localhost:3000/sections`);
       const data = response.data.data;
-      setCourses(data);
+      setSections(data);
     } catch (error) {
       Toast("Bağlantı Hatası!", "error");
-      console.error("Failed to fetch courses:", error);
+      console.error("Failed to fetch sections:", error);
     }
   };
 
   const handleOpenModal = async () => {
     if (checkedIDs.length == 1) {
-      await fetchCourses();
+      await fetchSections();
       onOpen();
     } else {
       Toast("Lütfen Yalnızca Bir Öğrenci Seçin!", "info");
@@ -129,30 +129,30 @@ function Student() {
     setCheckedIDs(updatedCheckedIDs);
   };
 
-  const handleCourseCheck = (position, courseID) => {
-    const updatedCheckedState = checkedCourseState.map((item, index) =>
+  const handleSectionCheck = (position, sectionID) => {
+    const updatedCheckedState = checkedSectionState.map((item, index) =>
       index === position ? !item : item
     );
-    setCheckedCourseState(updatedCheckedState);
+    setCheckedSectionState(updatedCheckedState);
 
-    const updatedCheckedIDs = [...checkedCourseIDs];
+    const updatedCheckedIDs = [...checkedSectionIDs];
     if (updatedCheckedState[position]) {
-      updatedCheckedIDs.push(courseID);
+      updatedCheckedIDs.push(sectionID);
     } else {
-      const index = updatedCheckedIDs.indexOf(courseID);
+      const index = updatedCheckedIDs.indexOf(sectionID);
       if (index > -1) {
         updatedCheckedIDs.splice(index, 1);
       }
     }
-    setCheckedCourseIDs(updatedCheckedIDs);
+    setCheckedSectionIDs(updatedCheckedIDs);
   };
 
-  const addCoursesToStudent = async (studentId, courseIds) => {
+  const addSectionsToStudent = async (studentId, sectionIds) => {
     try {
       const response = await axios.post(
-        `http://localhost:3000/student/add/course/${studentId}`,
+        `http://localhost:3000/student/add/section/${studentId}`,
         {
-          courses: courseIds,
+          sections: sectionIds,
         }
       );
       resetCheckboxes();
@@ -163,7 +163,7 @@ function Student() {
       if (error.response.status === 409)
         Toast("Öğrenci Derslere Zaten Sahip", "info");
       else Toast("Dersler Atanamadı!", "error");
-      console.error("Failed to add courses to student:", error);
+      console.error("Failed to add sections to student:", error);
     }
   };
 
@@ -194,56 +194,56 @@ function Student() {
 
   const resetCheckboxes = () => {
     setCheckedState(new Array(students.length).fill(false));
-    setCheckedCourseState(new Array(courses.length).fill(false));
-    setCheckedCourseIDs([]);
+    setCheckedSectionState(new Array(sections.length).fill(false));
+    setCheckedSectionIDs([]);
     setCheckedIDs([]);
   };
 
-  const deleteSelectedCourses = async () => {
+  const deleteSelectedSections = async () => {
     try {
       const response = await axios.delete(
-        `http://localhost:3000/students/delete/courses`,
+        `http://localhost:3000/students/delete/sections`,
         {
           data: { ids: checkedIDs },
         }
       );
       console.log(response.data);
-      fetchCourses();
+      fetchSections();
       resetCheckboxes();
       Toast("Başarıyla Sıfırlandı!", "success");
     } catch (error) {
       Toast("Dersler Sıfırlanamadı!", "error");
-      console.error("Error deleting selected courses:", error);
+      console.error("Error deleting selected sections:", error);
     }
   };
 
   const handleDerslerClick = async (studentID) => {
     try {
       const response = await axios.get(
-        `http://localhost:3000/student/courses/${studentID}`
+        `http://localhost:3000/student/sections/${studentID}`
       );
       const data = response.data;
       data.id = studentID;
-      setCoursesData(data);
-      setIsCoursesModalOpen(true);
+      setSectionsData(data);
+      setIsSectionsModalOpen(true);
     } catch (error) {
       Toast("Dersler Buunamadı!", "error");
       console.error("Failed to fetch students:", error);
     }
   };
 
-  const deleteSelectedCourse = async (studentID, courseCode) => {
-    console.log(studentID, courseCode);
+  const deleteSelectedSection = async (studentID, sectionCode) => {
+    console.log(studentID, sectionCode);
     try {
       const response = await axios.delete(
-        `http://localhost:3000/student/delete/course/${studentID}/${courseCode}`
+        `http://localhost:3000/student/delete/section/${studentID}/${sectionCode}`
       );
       Toast("Başarıyla Silindi!", "success");
       console.log(response.data);
       handleDerslerClick(studentID);
     } catch (error) {
       Toast("Ders Silinemedi!", "error");
-      console.error("Failed to delete course:", error);
+      console.error("Failed to delete section:", error);
     }
   };
 
@@ -255,8 +255,8 @@ function Student() {
             <StudentControls
               onStudentAdded={fetchStudents}
               onStudentDeleted={deleteSelected}
-              onInspectCourses={handleOpenModal}
-              onResetSelected={deleteSelectedCourses}
+              onInspectSections={handleOpenModal}
+              onResetSelected={deleteSelectedSections}
               Toast={Toast}
             />
           </Box>
@@ -268,15 +268,15 @@ function Student() {
           >
             <Box mt={16}>
               <Modal
-                isOpen={isCoursesModalOpen}
-                onClose={() => setIsCoursesModalOpen(false)}
+                isOpen={isSectionsModalOpen}
+                onClose={() => setIsSectionsModalOpen(false)}
               >
                 <ModalOverlay />
                 <ModalContent>
                   <ModalHeader>Ders Listesi</ModalHeader>
                   <ModalCloseButton />
                   <ModalBody>
-                    {coursesData.data.length > 0 ? (
+                    {sectionsData.data.length > 0 ? (
                       <TableContainer>
                         <Table variant="striped" colorScheme="teal">
                           <Thead>
@@ -285,22 +285,22 @@ function Student() {
                             </Tr>
                           </Thead>
                           <Tbody>
-                            {coursesData.data.map((course, index) => (
+                            {sectionsData.data.map((section, index) => (
                               <Tr key={index}>
                                 <Td textAlign={"center"}>
                                   <CloseButton
                                     position={"absolute"}
                                     size="sm"
-                                    className="course-delete-btn"
+                                    className="section-delete-btn"
                                     onClick={(e) => {
                                       e.stopPropagation();
-                                      deleteSelectedCourse(
-                                        coursesData.id,
-                                        course.courseID
+                                      deleteSelectedSection(
+                                        sectionsData.id,
+                                        section.sectionID
                                       );
                                     }}
                                   />
-                                  {course.courseCode}
+                                  {section.courseCode}
                                 </Td>
                               </Tr>
                             ))}
@@ -334,25 +334,25 @@ function Student() {
                           </Tr>
                         </Thead>
                         <Tbody>
-                          {courses.map((course, index) => (
-                            <Tr key={course.id}>
+                          {sections.map((section, index) => (
+                            <Tr key={section.id}>
                               <Td textAlign={"center"}>
                                 <Checkbox
-                                  isChecked={checkedCourseState[index]}
+                                  isChecked={checkedSectionState[index]}
                                   onChange={() =>
-                                    handleCourseCheck(index, course.id)
+                                    handleSectionCheck(index, section.id)
                                   }
                                 />
                               </Td>
-                              <Td textAlign={"center"}>{course.courseCode}</Td>
-                              <Td textAlign={"center"}>{course.faculty}</Td>
+                              <Td textAlign={"center"}>{section.courseCode}</Td>
+                              <Td textAlign={"center"}>{section.faculty}</Td>
                               <Td textAlign={"center"}>
-                                {course.hour} {course.day}
+                                {section.hour} {section.day}
                               </Td>
-                              <Td textAlign={"center"}>{course.place}</Td>
+                              <Td textAlign={"center"}>{section.place}</Td>
                               <Td textAlign={"center"}>
-                                {course.instructor.firstName}{" "}
-                                {course.instructor.lastName}
+                                {section.instructor.firstName}{" "}
+                                {section.instructor.lastName}
                               </Td>
                             </Tr>
                           ))}
@@ -365,7 +365,7 @@ function Student() {
                       colorScheme="blue"
                       mr={3}
                       onClick={() =>
-                        addCoursesToStudent(checkedIDs[0], checkedCourseIDs)
+                        addSectionsToStudent(checkedIDs[0], checkedSectionIDs)
                       }
                     >
                       Ekle
