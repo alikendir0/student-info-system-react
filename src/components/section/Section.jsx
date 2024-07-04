@@ -165,7 +165,7 @@ function Section() {
                           <Td textAlign={"center"}>
                             {section.hour} {section.day}
                           </Td>
-                          <Td textAlign={"center"}>{section.place}</Td>
+                          <Td textAlign={"center"}>{section.roomNo}</Td>
                           <Td textAlign={"center"}>
                             {section.instructor.firstName}{" "}
                             {section.instructor.lastName}

@@ -80,6 +80,9 @@ const Navbar = () => {
             <Button variant="ghost" onClick={() => navigate("/faculty")}>
               Fakülteler
             </Button>
+            <Button variant="ghost" onClick={() => navigate("/room")}>
+              Derslikler
+            </Button>
           </HStack>
         </HStack>
         <HStack spacing={4} alignItems="center">

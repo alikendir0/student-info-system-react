@@ -1,4 +1,4 @@
-import InstructorControls from "./InstructorControls";
+import RoomControls from "./RoomControls";
 
 import {
   Flex,
@@ -28,11 +28,11 @@ import {
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-function Instructor() {
+function Room() {
   const toast = useToast();
   const toastIdRef = React.useRef();
 
-  const [instructors, setInstructors] = useState([]);
+  const [rooms, setRooms] = useState([]);
   const [isLoaded, setIsLoaded] = useState(false);
   const [checkedState, setCheckedState] = useState([]);
   const [checkedIDs, setCheckedIDs] = useState([]);
@@ -46,24 +46,24 @@ function Instructor() {
     });
   }
 
-  const fetchInstructors = async () => {
+  const fetchRooms = async () => {
     setIsLoaded(false);
     try {
-      const response = await axios.get(`http://localhost:3000/instructors`);
+      const response = await axios.get(`http://localhost:3000/rooms`);
       const data = response.data.data;
-      setInstructors(data);
+      setRooms(data);
       setIsLoaded(true);
     } catch (error) {
       Toast("Bağlantı Hatası!", "error");
-      console.error("Failed to fetch instructors:", error);
-      setTimeout(fetchInstructors, 5000);
+      console.error("Failed to fetch rooms:", error);
+      setTimeout(fetchRooms, 5000);
     }
   };
 
   const deleteSelected = async () => {
     try {
-      const deletePromises = checkedIDs.map((instructorID) =>
-        fetch(`http://localhost:3000/instructor/${instructorID}`, {
+      const deletePromises = checkedIDs.map((roomID) =>
+        fetch(`http://localhost:3000/room/${roomID}`, {
           method: "DELETE",
         })
       );
@@ -72,41 +72,37 @@ function Instructor() {
       responses.forEach((response) => {
         if (!response.ok) {
           console.error(
-            `Failed to delete instructor with ID: ${response.url
-              .split("/")
-              .pop()}`
+            `Failed to delete room with ID: ${response.url.split("/").pop()}`
           );
         }
       });
-      fetchInstructors();
+      fetchRooms();
       setCheckedIDs([]);
       Toast("Başarıyla Silindi!", "success");
     } catch (error) {
       Toast("Hata!", "error");
-      console.error("Error deleting selected instructors:", error);
+      console.error("Error deleting selected rooms:", error);
     }
   };
 
   useEffect(() => {
-    fetchInstructors();
+    fetchRooms();
   }, []);
 
   useEffect(() => {
-    setCheckedState(new Array(instructors.length).fill(false));
-  }, [instructors]);
+    setCheckedState(new Array(rooms.length).fill(false));
+  }, [rooms]);
 
   const handleSelectAll = () => {
     const allChecked = checkedState.every(Boolean);
-    const newState = new Array(instructors.length).fill(!allChecked);
+    const newState = new Array(rooms.length).fill(!allChecked);
     setCheckedState(newState);
 
-    const newCheckedIDs = !allChecked
-      ? instructors.map((instructor) => instructor.instructorID)
-      : [];
+    const newCheckedIDs = !allChecked ? rooms.map((room) => room.id) : [];
     setCheckedIDs(newCheckedIDs);
   };
 
-  const handleCheck = (position, instructorID) => {
+  const handleCheck = (position, roomID) => {
     const updatedCheckedState = checkedState.map((item, index) =>
       index === position ? !item : item
     );
@@ -114,9 +110,9 @@ function Instructor() {
 
     const updatedCheckedIDs = [...checkedIDs];
     if (updatedCheckedState[position]) {
-      updatedCheckedIDs.push(instructorID);
+      updatedCheckedIDs.push(roomID);
     } else {
-      const index = updatedCheckedIDs.indexOf(instructorID);
+      const index = updatedCheckedIDs.indexOf(roomID);
       if (index > -1) {
         updatedCheckedIDs.splice(index, 1);
       }
@@ -129,9 +125,9 @@ function Instructor() {
       {isLoaded ? (
         <Flex direction="column" align="right" mt={8}>
           <Box position={"absolute"} alignSelf="flex-end" mr={6}>
-            <InstructorControls
-              onInstructorAdded={fetchInstructors}
-              onInstructorDeleted={deleteSelected}
+            <RoomControls
+              onRoomAdded={fetchRooms}
+              onRoomDeleted={deleteSelected}
               Toast={Toast}
             />
           </Box>
@@ -143,10 +139,10 @@ function Instructor() {
             height="100vh"
           >
             <Box mt={16}>
-              {instructors.length !== 0 ? (
+              {rooms.length !== 0 ? (
                 <TableContainer>
                   <Table variant="striped" colorScheme="teal">
-                    <TableCaption>Öğretim Üyeleri</TableCaption>
+                    <TableCaption>Derslikler</TableCaption>
                     <Thead>
                       <Tr>
                         <Th textAlign={"center"}>
@@ -158,31 +154,25 @@ function Instructor() {
                             Hepsini Seç
                           </button>
                         </Th>
-                        <Th textAlign={"center"}>Ad</Th>
-                        <Th textAlign={"center"}>Soyad</Th>
-                        <Th textAlign={"center"}>T.C. Kimlik Numarası</Th>
-                        <Th textAlign={"center"}>Öğretim Numarası</Th>
-                        <Th textAlign={"center"}>Fakülte</Th>
+                        <Th textAlign={"center"}>Oda Kodu</Th>
+                        <Th textAlign={"center"}>Önerilen Kapasite</Th>
+                        <Th textAlign={"center"}>ID</Th>
                       </Tr>
                     </Thead>
                     <Tbody>
-                      {instructors.map((instructor, index) => (
-                        <Tr key={instructor.id}>
+                      {rooms.map((room, index) => (
+                        <Tr key={room.id}>
                           <Td textAlign={"center"}>
                             <Checkbox
                               isChecked={checkedState[index]}
-                              onChange={() =>
-                                handleCheck(index, instructor.instructorNo)
-                              }
+                              onChange={() => handleCheck(index, room.id)}
                             />
                           </Td>
-                          <Td textAlign={"center"}>{instructor.firstName}</Td>
-                          <Td textAlign={"center"}>{instructor.lastName}</Td>
-                          <Td textAlign={"center"}>{instructor.id}</Td>
+                          <Td textAlign={"center"}>{room.code}</Td>
                           <Td textAlign={"center"}>
-                            {instructor.instructorNo || "-"}
+                            {room.recommendedCapacity}
                           </Td>
-                          <Td textAlign={"center"}>{instructor.facultyName}</Td>
+                          <Td textAlign={"center"}>{room.id}</Td>
                         </Tr>
                       ))}
                     </Tbody>
@@ -190,7 +180,7 @@ function Instructor() {
                 </TableContainer>
               ) : (
                 <Box textAlign="center" p={5}>
-                  Hiçbir Öğretim Üyesi Eklenmedi!
+                  Hiçbir Derslik Eklenmedi!
                 </Box>
               )}
             </Box>
@@ -203,4 +193,4 @@ function Instructor() {
   );
 }
 
-export default Instructor;
+export default Room;

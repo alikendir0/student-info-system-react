@@ -17,6 +17,7 @@ function InstructorForm({ onClose, onInstructorAdded, Toast }) {
     instructorNo: "",
     firstName: "",
     lastName: "",
+    facultyID: "",
   });
   const [faculties, setFaculties] = useState([]);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -55,11 +56,11 @@ function InstructorForm({ onClose, onInstructorAdded, Toast }) {
       ...instructorData,
       [property]: value,
     });
+    console.log(instructorData);
   };
 
   useEffect(() => {
     fetchFaculties();
-    console.log(instructorData);
   }, []);
 
   return (
@@ -120,6 +121,23 @@ function InstructorForm({ onClose, onInstructorAdded, Toast }) {
           borderWidth="2px"
           onChange={(e) => handleInputChange(e, "instructorNo")}
         />
+      </FormControl>
+      <FormControl>
+        <FormLabel htmlFor="instructor-id" textAlign={"center"}>
+          Fakülte
+        </FormLabel>
+        <Select
+          id="faculty-select"
+          variant="filled"
+          placeholder="Fakülte"
+          onChange={(e) => handleInputChange(e, "facultyID")}
+        >
+          {faculties.map((faculty) => (
+            <option key={faculty.id} value={faculty.id}>
+              {faculty.name}
+            </option>
+          ))}
+        </Select>
       </FormControl>
       <Button variant="solid" colorScheme="teal" onClick={handleAddClick}>
         Ekle
