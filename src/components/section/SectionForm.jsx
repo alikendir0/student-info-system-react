@@ -16,25 +16,23 @@ function SectionForm({ onClose, onSectionAdded, Toast }) {
     courseCode: "",
     day: "",
     hour: "",
-    place: "",
+    roomNo: "",
     capacity: "",
     noStudents: "",
-    instructor: {
-      firstName: "",
-      lastName: "",
-    },
+    instructorNo: "",
   });
   const [selectedFaculty, setSelectedFaculty] = useState(null);
   const [faculties, setFaculties] = useState([]);
   const [courses, setCourses] = useState([]);
   const [instructors, setInstructors] = useState([]);
+  const [rooms, setRooms] = useState([]);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [recommendedCapacity, setRecommendedCapacity] = useState("");
 
   const handleAddClick = () => {
     axios
       .post("http://localhost:3000/section", sectionData)
       .then((response) => {
-        console.log(response.data);
         onSectionAdded();
         Toast("Başarıyla Eklendi!", "success");
       })
@@ -59,7 +57,12 @@ function SectionForm({ onClose, onSectionAdded, Toast }) {
       });
     } else if (property === "faculty") {
       fetchCourses(value);
+      fetchInstructors(value);
     } else {
+      if (property === "roomNo")
+        setRecommendedCapacity(
+          rooms.find((room) => room.code === value).recommendedCapacity
+        );
       setSectionData({
         ...sectionData,
         [property]: value,
@@ -94,10 +97,11 @@ function SectionForm({ onClose, onSectionAdded, Toast }) {
     }
   };
 
-  const fetchInstructors = async () => {
-    setIsLoaded(false);
+  const fetchInstructors = async (facultyId) => {
     try {
-      const response = await axios.get(`http://localhost:3000/instructors`);
+      const response = await axios.get(
+        `http://localhost:3000/instructors/faculty/${facultyId}`
+      );
       const data = response.data.data;
       setInstructors(data);
       setIsLoaded(true);
@@ -107,9 +111,21 @@ function SectionForm({ onClose, onSectionAdded, Toast }) {
     }
   };
 
+  const fetchRooms = async () => {
+    try {
+      const response = await axios.get(`http://localhost:3000/rooms`);
+      const data = response.data.data;
+      setRooms(data);
+      setIsLoaded(true);
+    } catch (error) {
+      console.error("Failed to fetch rooms:", error);
+      setTimeout(fetchRooms, 5000);
+    }
+  };
+
   useEffect(() => {
     fetchFaculties();
-    fetchInstructors();
+    fetchRooms();
   }, []);
 
   return (
@@ -130,7 +146,7 @@ function SectionForm({ onClose, onSectionAdded, Toast }) {
           onChange={(e) => handleInputChange(e, "faculty")}
         >
           {faculties.map((faculty) => (
-            <option key={faculty.id} value={faculty.id}>
+            <option key={faculty.name} value={faculty.id}>
               {faculty.name}
             </option>
           ))}
@@ -148,8 +164,29 @@ function SectionForm({ onClose, onSectionAdded, Toast }) {
           onChange={(e) => handleInputChange(e, "courseCode")}
         >
           {courses.map((course) => (
-            <option key={course.id} value={course.code}>
+            <option key={course.code} value={course.code}>
               {course.code}
+            </option>
+          ))}
+        </Select>
+      </FormControl>
+      <FormControl>
+        <FormLabel htmlFor="section-instructor" textAlign={"center"}>
+          Öğretim Görevlisi
+        </FormLabel>
+        <Select
+          id="instructor-select"
+          variant="filled"
+          placeholder="Öğretim Görevlisi"
+          disabled={!selectedFaculty}
+          onChange={(e) => handleInputChange(e, "instructorNo")}
+        >
+          {instructors.map((instructor) => (
+            <option
+              key={instructor.instructorNo}
+              value={instructor.instructorNo}
+            >
+              {instructor.firstName} {instructor.lastName}
             </option>
           ))}
         </Select>
@@ -194,17 +231,22 @@ function SectionForm({ onClose, onSectionAdded, Toast }) {
         />
       </FormControl>
       <FormControl>
-        <FormLabel htmlFor="section-place" textAlign={"center"}>
+        <FormLabel htmlFor="section-roomNo" textAlign={"center"}>
           Sınıf
         </FormLabel>
-        <Input
-          id="section-place"
-          type="text"
-          colorScheme="teal"
-          textAlign={"center"}
-          borderWidth="2px"
-          onChange={(e) => handleInputChange(e, "place")}
-        />
+        <Select
+          id="course-code-select"
+          variant="filled"
+          placeholder="Ders Kodu"
+          disabled={!selectedFaculty}
+          onChange={(e) => handleInputChange(e, "roomNo")}
+        >
+          {rooms.map((room) => (
+            <option key={room.code} value={room.code}>
+              {room.code}
+            </option>
+          ))}
+        </Select>
       </FormControl>
       <FormControl>
         <FormLabel htmlFor="section-capacity" textAlign={"center"}>
@@ -216,6 +258,7 @@ function SectionForm({ onClose, onSectionAdded, Toast }) {
           colorScheme="teal"
           textAlign={"center"}
           borderWidth="2px"
+          placeholder={recommendedCapacity}
           onChange={(e) => handleInputChange(e, "capacity")}
         />
       </FormControl>
@@ -231,30 +274,6 @@ function SectionForm({ onClose, onSectionAdded, Toast }) {
           borderWidth="2px"
           onChange={(e) => handleInputChange(e, "noStudents")}
         />
-      </FormControl>
-      <FormControl>
-        <FormLabel htmlFor="section-instructor" textAlign={"center"}>
-          Öğretim Görevlisi
-        </FormLabel>
-        <Select
-          id="instructor-select"
-          variant="filled"
-          placeholder="Öğretim Görevlisi"
-          onChange={(e) =>
-            setSectionData({
-              ...sectionData,
-              instructor: instructors.find(
-                (instructor) => instructor.id === e.target.value
-              ),
-            })
-          }
-        >
-          {instructors.map((instructor) => (
-            <option key={instructor.id} value={instructor.id}>
-              {instructor.firstName} {instructor.lastName}
-            </option>
-          ))}
-        </Select>
       </FormControl>
       <Button variant="solid" colorScheme="teal" onClick={handleAddClick}>
         Kaydet
