@@ -1,4 +1,5 @@
 import SectionControls from "./SectionControls";
+import SectionEdit from "./SectionEdit";
 
 import {
   Flex,
@@ -14,6 +15,8 @@ import {
   Checkbox,
   Spinner,
   useToast,
+  useDisclosure,
+  Button,
 } from "@chakra-ui/react";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
@@ -21,8 +24,10 @@ import axios from "axios";
 function Section() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [sections, setSections] = useState([]);
+  const [sectionData, setSectionData] = useState({});
   const [checkedState, setCheckedState] = useState([]);
   const [checkedIDs, setCheckedIDs] = useState([]);
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const toast = useToast();
   const toastIdRef = React.useRef();
@@ -50,6 +55,7 @@ function Section() {
       const data = response.data.data;
       setSections(data);
       setIsLoaded(true);
+      console.log("Sections fetched:", data);
     } catch (error) {
       Toast("Bağlantı Hatası!", "error");
       console.error("Failed to fetch sections:", error);
@@ -121,6 +127,17 @@ function Section() {
               Toast={Toast}
             />
           </Box>
+          {isOpen && (
+            <Box position={"absolute"} borderRadius={"md"}>
+              <SectionEdit
+                isOpen={isOpen}
+                onClose={onClose}
+                sectionData={sectionData}
+                fetchSections={fetchSections}
+                Toast={Toast}
+              />
+            </Box>
+          )}
           <Flex
             mt={6}
             justifyContent="center"
@@ -149,6 +166,7 @@ function Section() {
                         <Th textAlign={"center"}>Sınıf</Th>
                         <Th textAlign={"center"}>Öğretim Görevlisi</Th>
                         <Th textAlign={"center"}>Kapasite</Th>
+                        <Th textAlign={"center"}>Düzenle</Th>
                       </Tr>
                     </Thead>
                     <Tbody>
@@ -172,6 +190,16 @@ function Section() {
                           </Td>
                           <Td textAlign={"center"}>
                             {section.noStudents}/{section.capacity}
+                          </Td>
+                          <Td textAlign={"center"}>
+                            <Button
+                              onClick={() => {
+                                setSectionData(section);
+                                onOpen();
+                              }}
+                            >
+                              Düzenle
+                            </Button>
                           </Td>
                         </Tr>
                       ))}

@@ -7,11 +7,18 @@ import {
   Input,
   useColorModeValue,
   Select,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-function FacultyForm({ onClose, onFacultyAdded, Toast }) {
+function FacultyForm({ isOpen, onClose, onFacultyAdded, Toast }) {
   const [facultyData, setFacultyData] = useState({
     name: "",
   });
@@ -60,31 +67,38 @@ function FacultyForm({ onClose, onFacultyAdded, Toast }) {
   }, []);
 
   return (
-    <Stack
-      bg={useColorModeValue("gray.100", "gray.900")}
-      spacing={3}
-      borderRadius={"md"}
-      p={2}
-    >
-      <FormControl>
-        <FormLabel htmlFor="faculty-name" textAlign={"center"}>
-          Fakülte Adı
-        </FormLabel>
-        <Input
-          id="faculty-name"
-          placeholder="Fakülte Adı"
-          onChange={(e) => handleInputChange(e, "name")}
-        />
-      </FormControl>
-      <Button variant="solid" colorScheme="teal" onClick={handleAddClick}>
-        Ekle
-      </Button>
-      {onClose && (
-        <Button variant="solid" colorScheme="teal" onClick={onClose}>
-          İptal
-        </Button>
-      )}
-    </Stack>
+    <Modal isOpen={isOpen} onClose={onClose}>
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader>Fakülte Ekle</ModalHeader>
+        <ModalCloseButton />
+        <ModalBody>
+          <FormControl>
+            <FormLabel htmlFor="faculty-name">Fakülte Adı</FormLabel>
+            <Input
+              id="faculty-name"
+              placeholder="Fakülte Adı"
+              onChange={(e) => handleInputChange(e, "name")}
+            />
+          </FormControl>
+        </ModalBody>
+        <ModalFooter>
+          <Button
+            variant="solid"
+            colorScheme="teal"
+            onClick={handleAddClick}
+            mr={3}
+          >
+            Ekle
+          </Button>
+          {onClose && (
+            <Button variant="solid" onClick={onClose}>
+              İptal
+            </Button>
+          )}
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
   );
 }
 

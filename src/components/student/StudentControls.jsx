@@ -49,6 +49,7 @@ function StudentControls({
       <Box position={"absolute"} borderRadius={"md"} backgroundColor="teal">
         {showForm && (
           <StudentForm
+            isOpen={showForm}
             onClose={toggleFormVisibility}
             onStudentAdded={onStudentAdded}
             Toast={Toast}

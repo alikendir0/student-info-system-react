@@ -37,6 +37,7 @@ function FacultyControls({ onFacultyAdded, onFacultyDeleted, Toast }) {
       <Box position={"absolute"} borderRadius={"md"}>
         {showForm && (
           <FacultyForm
+            isOpen={showForm}
             onClose={toggleFormVisibility}
             onFacultyAdded={onFacultyAdded}
             Toast={Toast}

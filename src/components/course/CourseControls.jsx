@@ -37,6 +37,7 @@ function CourseControls({ onCourseAdded, onCourseDeleted, Toast }) {
       <Box position={"absolute"} borderRadius={"md"}>
         {showForm && (
           <CourseForm
+            isOpen={showForm}
             onClose={toggleFormVisibility}
             onCourseAdded={onCourseAdded}
             Toast={Toast}

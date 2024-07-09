@@ -7,11 +7,18 @@ import {
   Input,
   useColorModeValue,
   Select,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-function RoomForm({ onClose, onRoomAdded, Toast }) {
+function RoomForm({ isOpen, onClose, onRoomAdded, Toast }) {
   const [roomData, setRoomData] = useState({
     code: "",
     recommendedCapacity: "",
@@ -61,41 +68,46 @@ function RoomForm({ onClose, onRoomAdded, Toast }) {
   }, []);
 
   return (
-    <Stack
-      bg={useColorModeValue("gray.100", "gray.900")}
-      spacing={3}
-      borderRadius={"md"}
-      p={2}
-    >
-      <FormControl>
-        <FormLabel htmlFor="room-code" textAlign={"center"}>
-          Oda Kodu
-        </FormLabel>
-        <Input
-          id="room-code"
-          textAlign={"center"}
-          onChange={(e) => handleInputChange(e, "code")}
-        />
-      </FormControl>
-      <FormControl>
-        <FormLabel htmlFor="room-recommendedCapacity" textAlign={"center"}>
-          Önerilen Kapasite
-        </FormLabel>
-        <Input
-          id="room-recommendedCapacity"
-          textAlign={"center"}
-          onChange={(e) => handleInputChange(e, "recommendedCapacity")}
-        />
-      </FormControl>
-      <Button variant="solid" colorScheme="teal" onClick={handleAddClick}>
-        Ekle
-      </Button>
-      {onClose && (
-        <Button variant="solid" colorScheme="teal" onClick={onClose}>
-          İptal
-        </Button>
-      )}
-    </Stack>
+    <Modal isOpen={isOpen} onClose={onClose}>
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader>Derslik Ekle</ModalHeader>
+        <ModalCloseButton />
+        <ModalBody>
+          <FormControl mb={4}>
+            <FormLabel htmlFor="room-code">Oda Kodu</FormLabel>
+            <Input
+              id="room-code"
+              onChange={(e) => handleInputChange(e, "code")}
+            />
+          </FormControl>
+          <FormControl mb={4}>
+            <FormLabel htmlFor="room-recommendedCapacity">
+              Önerilen Kapasite
+            </FormLabel>
+            <Input
+              id="room-recommendedCapacity"
+              onChange={(e) => handleInputChange(e, "recommendedCapacity")}
+            />
+          </FormControl>
+        </ModalBody>
+        <ModalFooter>
+          <Button
+            variant="solid"
+            colorScheme="teal"
+            onClick={handleAddClick}
+            mr={3}
+          >
+            Ekle
+          </Button>
+          {onClose && (
+            <Button variant="solid" colorScheme="teal" onClick={onClose}>
+              İptal
+            </Button>
+          )}
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
   );
 }
 

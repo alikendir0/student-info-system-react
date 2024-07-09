@@ -37,6 +37,7 @@ function RoomControls({ onRoomAdded, onRoomDeleted, Toast }) {
       <Box position={"absolute"} borderRadius={"md"}>
         {showForm && (
           <RoomForm
+            isOpen={showForm}
             onClose={toggleFormVisibility}
             onRoomAdded={onRoomAdded}
             Toast={Toast}

@@ -1,4 +1,5 @@
 import RoomControls from "./RoomControls";
+import RoomEdit from "./RoomEdit";
 
 import {
   Flex,
@@ -37,6 +38,7 @@ function Room() {
   const [checkedState, setCheckedState] = useState([]);
   const [checkedIDs, setCheckedIDs] = useState([]);
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [roomData, setRoomData] = useState({});
 
   function Toast(e, status) {
     toastIdRef.current = toast({
@@ -131,7 +133,15 @@ function Room() {
               Toast={Toast}
             />
           </Box>
-          <Box position={"absolute"} alignSelf="flex-end" mr={6}></Box>
+          <Box position={"absolute"} borderRadius={"md"}>
+            <RoomEdit
+              isOpen={isOpen}
+              onClose={onClose}
+              roomData={roomData}
+              fetchRooms={fetchRooms}
+              Toast={Toast}
+            />
+          </Box>
           <Flex
             mt={6}
             justifyContent="center"
@@ -157,6 +167,7 @@ function Room() {
                         <Th textAlign={"center"}>Oda Kodu</Th>
                         <Th textAlign={"center"}>Önerilen Kapasite</Th>
                         <Th textAlign={"center"}>ID</Th>
+                        <Th textAlign={"center"}>Düzenle</Th>
                       </Tr>
                     </Thead>
                     <Tbody>
@@ -173,6 +184,17 @@ function Room() {
                             {room.recommendedCapacity}
                           </Td>
                           <Td textAlign={"center"}>{room.id}</Td>
+                          <Td textAlign={"center"}>
+                            <Button
+                              onClick={() => {
+                                onOpen();
+                                setRoomData(room);
+                              }}
+                              colorScheme="teal"
+                            >
+                              Düzenle
+                            </Button>
+                          </Td>
                         </Tr>
                       ))}
                     </Tbody>
