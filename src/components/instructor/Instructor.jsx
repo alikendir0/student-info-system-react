@@ -1,4 +1,5 @@
 import InstructorControls from "./InstructorControls";
+import InstructorEdit from "./InstructorEdit";
 
 import {
   Flex,
@@ -24,15 +25,29 @@ import {
   CloseButton,
   useToast,
   Spinner,
+  FormControl,
+  FormLabel,
+  Input,
 } from "@chakra-ui/react";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { Form } from "react-router-dom";
 
 function Instructor() {
   const toast = useToast();
   const toastIdRef = React.useRef();
 
   const [instructors, setInstructors] = useState([]);
+  const [instructorData, setInstructorData] = useState([
+    {
+      id: "",
+      firstName: "",
+      lastName: "",
+      instructorNo: "",
+      facultyName: "",
+      facultyID: "",
+    },
+  ]);
   const [isLoaded, setIsLoaded] = useState(false);
   const [checkedState, setCheckedState] = useState([]);
   const [checkedIDs, setCheckedIDs] = useState([]);
@@ -135,6 +150,15 @@ function Instructor() {
               Toast={Toast}
             />
           </Box>
+          <Box position={"absolute"} borderRadius={"md"}>
+            <InstructorEdit
+              isOpen={isOpen}
+              onClose={onClose}
+              instructorData={instructorData}
+              fetchInstructors={fetchInstructors}
+              Toast={Toast}
+            />
+          </Box>
           <Box position={"absolute"} alignSelf="flex-end" mr={6}></Box>
           <Flex
             mt={6}
@@ -163,6 +187,7 @@ function Instructor() {
                         <Th textAlign={"center"}>T.C. Kimlik Numarası</Th>
                         <Th textAlign={"center"}>Öğretim Numarası</Th>
                         <Th textAlign={"center"}>Fakülte</Th>
+                        <Th textAlign={"center"}>Düzenle</Th>
                       </Tr>
                     </Thead>
                     <Tbody>
@@ -183,6 +208,23 @@ function Instructor() {
                             {instructor.instructorNo || "-"}
                           </Td>
                           <Td textAlign={"center"}>{instructor.facultyName}</Td>
+                          <Td textAlign={"center"}>
+                            <Button
+                              onClick={() => {
+                                onOpen();
+                                setInstructorData({
+                                  id: instructor.id,
+                                  firstName: instructor.firstName,
+                                  lastName: instructor.lastName,
+                                  instructorNo: instructor.instructorNo,
+                                  facultyName: instructor.facultyName,
+                                  facultyID: instructor.facultyID,
+                                });
+                              }}
+                            >
+                              Düzenle
+                            </Button>
+                          </Td>
                         </Tr>
                       ))}
                     </Tbody>

@@ -7,11 +7,18 @@ import {
   Input,
   useColorModeValue,
   Select,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-function CourseForm({ onClose, onCourseAdded, Toast }) {
+function CourseForm({ isOpen, onClose, onCourseAdded, Toast }) {
   const [courseData, setCourseData] = useState({
     facultyID: "",
     code: "",
@@ -61,49 +68,54 @@ function CourseForm({ onClose, onCourseAdded, Toast }) {
   }, []);
 
   return (
-    <Stack
-      bg={useColorModeValue("gray.100", "gray.900")}
-      spacing={3}
-      borderRadius={"md"}
-      p={2}
-    >
-      <FormControl>
-        <FormLabel htmlFor="faculty-name" textAlign={"center"}>
-          Fakülte
-        </FormLabel>
-        <Select
-          id="faculty-select"
-          variant="filled"
-          placeholder="Fakülte"
-          onChange={(e) => handleInputChange(e, "facultyID")}
-        >
-          {faculties.map((faculty) => (
-            <option key={faculty.id} value={faculty.id}>
-              {faculty.name}
-            </option>
-          ))}
-        </Select>
-      </FormControl>
-      <FormControl>
-        <FormLabel htmlFor="course-code" textAlign={"center"}>
-          Ders Kodu
-        </FormLabel>
-        <Input
-          id="course-code"
-          variant="filled"
-          placeholder="Ders Kodu"
-          onChange={(e) => handleInputChange(e, "code")}
-        />
-      </FormControl>
-      <Button variant="solid" colorScheme="teal" onClick={handleAddClick}>
-        Ekle
-      </Button>
-      {onClose && (
-        <Button variant="solid" colorScheme="teal" onClick={onClose}>
-          İptal
-        </Button>
-      )}
-    </Stack>
+    <Modal isOpen={isOpen} onClose={onClose}>
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader>Öğretim Üyesi Ekle</ModalHeader>
+        <ModalCloseButton />
+        <ModalBody>
+          <FormControl>
+            <FormLabel htmlFor="faculty-name">Fakülte</FormLabel>
+            <Select
+              id="faculty-select"
+              variant="filled"
+              placeholder="Fakülte"
+              onChange={(e) => handleInputChange(e, "facultyID")}
+            >
+              {faculties.map((faculty) => (
+                <option key={faculty.id} value={faculty.id}>
+                  {faculty.name}
+                </option>
+              ))}
+            </Select>
+          </FormControl>
+          <FormControl>
+            <FormLabel htmlFor="course-code">Ders Kodu</FormLabel>
+            <Input
+              id="course-code"
+              variant="filled"
+              placeholder="Ders Kodu"
+              onChange={(e) => handleInputChange(e, "code")}
+            />
+          </FormControl>
+        </ModalBody>
+        <ModalFooter>
+          <Button
+            variant="solid"
+            colorScheme="teal"
+            onClick={handleAddClick}
+            mr={3}
+          >
+            Ekle
+          </Button>
+          {onClose && (
+            <Button variant="solid" onClick={onClose}>
+              İptal
+            </Button>
+          )}
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
   );
 }
 

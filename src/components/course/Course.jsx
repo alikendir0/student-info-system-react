@@ -1,4 +1,5 @@
 import CourseControls from "./CourseControls";
+import CourseEdit from "./CourseEdit";
 
 import {
   Flex,
@@ -37,6 +38,13 @@ function Course() {
   const [checkedState, setCheckedState] = useState([]);
   const [checkedIDs, setCheckedIDs] = useState([]);
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [courseData, setCourseData] = useState([
+    {
+      id: "",
+      code: "",
+      facultyID: "",
+    },
+  ]);
 
   function Toast(e, status) {
     toastIdRef.current = toast({
@@ -132,7 +140,15 @@ function Course() {
               Toast={Toast}
             />
           </Box>
-          <Box position={"absolute"} alignSelf="flex-end" mr={6}></Box>
+          <Box position={"absolute"} borderRadius={"md"}>
+            <CourseEdit
+              isOpen={isOpen}
+              onClose={onClose}
+              courseData={courseData}
+              fetchCourses={fetchCourses}
+              Toast={Toast}
+            />
+          </Box>
           <Flex
             mt={6}
             justifyContent="center"
@@ -157,6 +173,7 @@ function Course() {
                         </Th>
                         <Th textAlign={"center"}>Ders Kodu</Th>
                         <Th textAlign={"center"}>Fakülte</Th>
+                        <Th textAlign={"center"}>Düzenle</Th>
                       </Tr>
                     </Thead>
                     <Tbody>
@@ -170,6 +187,20 @@ function Course() {
                           </Td>
                           <Td textAlign={"center"}>{course.code}</Td>
                           <Td textAlign={"center"}>{course.facultyName}</Td>
+                          <Td textAlign={"center"}>
+                            <Button
+                              onClick={() => {
+                                onOpen();
+                                setCourseData({
+                                  id: course.id,
+                                  code: course.code,
+                                  facultyID: course.facultyID,
+                                });
+                              }}
+                            >
+                              Düzenle
+                            </Button>
+                          </Td>
                         </Tr>
                       ))}
                     </Tbody>

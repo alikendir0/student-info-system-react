@@ -1,4 +1,5 @@
 import StudentControls from "./StudentControls";
+import StudentEdit from "./StudentEdit";
 
 import {
   Flex,
@@ -31,11 +32,20 @@ import axios from "axios";
 function Student() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [students, setStudents] = useState([]);
+  const [studentData, setStudentData] = useState([
+    {
+      id: "",
+      firstName: "",
+      lastName: "",
+      studentNo: "",
+    },
+  ]);
   const [checkedState, setCheckedState] = useState([]);
   const [checkedIDs, setCheckedIDs] = useState([]);
   const [checkedSectionState, setCheckedSectionState] = useState([]);
   const [checkedSectionIDs, setCheckedSectionIDs] = useState([]);
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [isStudentEditOpen, setIsStudentEditOpen] = useState(false);
   const [sections, setSections] = useState([]);
   const [isSectionsModalOpen, setIsSectionsModalOpen] = useState(false);
   const [sectionsData, setSectionsData] = useState({
@@ -52,6 +62,12 @@ function Student() {
       isClosable: true,
     });
   }
+
+  const openStudentEdit = () => {
+    setIsStudentEditOpen(true);
+  };
+
+  const closeStudentEdit = () => setIsStudentEditOpen(false);
 
   useEffect(() => {
     setCheckedState(new Array(students.length).fill(false));
@@ -108,7 +124,6 @@ function Student() {
       ? students.map((student) => student.studentNo)
       : [];
     setCheckedIDs(newCheckedIDs);
-    console.log(newCheckedIDs);
   };
 
   const handleCheck = (position, studentID) => {
@@ -260,6 +275,15 @@ function Student() {
               Toast={Toast}
             />
           </Box>
+          <Box position={"absolute"} borderRadius={"md"}>
+            <StudentEdit
+              isOpen={isStudentEditOpen}
+              onClose={closeStudentEdit}
+              studentData={studentData}
+              fetchStudents={fetchStudents}
+              Toast={Toast}
+            />
+          </Box>
           <Flex
             mt={6}
             justifyContent="center"
@@ -392,6 +416,9 @@ function Student() {
                         <Th textAlign={"center"}>Soyad</Th>
                         <Th textAlign={"center"}>T.C. Kimlik Numarası</Th>
                         <Th textAlign={"center"}>Öğrenci Numarası</Th>
+                        <Th textAlign={"center"}>Bölüm</Th>
+                        <Th textAlign={"center"}>Dersler</Th>
+                        <Th textAlign={"center"}>Düzenle</Th>
                       </Tr>
                     </Thead>
                     <Tbody>
@@ -410,6 +437,9 @@ function Student() {
                           <Td textAlign={"center"}>{student.id}</Td>
                           <Td textAlign={"center"}>{student.studentNo}</Td>
                           <Td textAlign={"center"}>
+                            {student.department.name}
+                          </Td>
+                          <Td textAlign={"center"}>
                             <Button
                               className="dersler"
                               type="button"
@@ -418,6 +448,23 @@ function Student() {
                               }
                             >
                               Dersler
+                            </Button>
+                          </Td>
+                          <Td textAlign={"center"}>
+                            <Button
+                              onClick={() => {
+                                setStudentData({
+                                  id: student.id,
+                                  firstName: student.firstName,
+                                  lastName: student.lastName,
+                                  studentNo: student.studentNo,
+                                  departmentName: student.department.name,
+                                  departmentID: student.department.id,
+                                });
+                                openStudentEdit();
+                              }}
+                            >
+                              Düzenle
                             </Button>
                           </Td>
                         </Tr>

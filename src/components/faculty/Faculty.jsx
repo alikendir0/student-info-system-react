@@ -1,4 +1,5 @@
 import FacultyControls from "./FacultyControls";
+import FacultyEdit from "./FacultyEdit";
 
 import {
   Flex,
@@ -33,6 +34,12 @@ function Faculty() {
   const toastIdRef = React.useRef();
 
   const [faculties, setFaculties] = useState([]);
+  const [facultyData, setFacultyData] = useState([
+    {
+      id: "",
+      name: "",
+    },
+  ]);
   const [isLoaded, setIsLoaded] = useState(false);
   const [checkedState, setCheckedState] = useState([]);
   const [checkedIDs, setCheckedIDs] = useState([]);
@@ -133,7 +140,15 @@ function Faculty() {
               Toast={Toast}
             />
           </Box>
-          <Box position={"absolute"} alignSelf="flex-end" mr={6}></Box>
+          <Box position={"absolute"} borderRadius={"md"}>
+            <FacultyEdit
+              isOpen={isOpen}
+              onClose={onClose}
+              facultyData={facultyData}
+              fetchFaculties={fetchFaculties}
+              Toast={Toast}
+            />
+          </Box>
           <Flex
             mt={6}
             justifyContent="center"
@@ -158,6 +173,7 @@ function Faculty() {
                         </Th>
                         <Th textAlign={"center"}>Fakülte Adı</Th>
                         <Th textAlign={"center"}>Fakülte Kodu</Th>
+                        <Th textAlign={"center"}>Düzenle</Th>
                       </Tr>
                     </Thead>
                     <Tbody>
@@ -171,6 +187,20 @@ function Faculty() {
                           </Td>
                           <Td textAlign={"center"}>{faculty.name}</Td>
                           <Td textAlign={"center"}>{faculty.id}</Td>
+                          <Td textAlign={"center"}>
+                            <Button
+                              onClick={() => {
+                                setFacultyData({
+                                  id: faculty.id,
+                                  name: faculty.name,
+                                });
+                                onOpen();
+                              }}
+                              colorScheme="teal"
+                            >
+                              Düzenle
+                            </Button>
+                          </Td>
                         </Tr>
                       ))}
                     </Tbody>

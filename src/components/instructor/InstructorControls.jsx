@@ -37,6 +37,7 @@ function InstructorControls({ onInstructorAdded, onInstructorDeleted, Toast }) {
       <Box position={"absolute"} borderRadius={"md"}>
         {showForm && (
           <InstructorForm
+            isOpen={showForm}
             onClose={toggleFormVisibility}
             onInstructorAdded={onInstructorAdded}
             Toast={Toast}
