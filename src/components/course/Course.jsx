@@ -38,6 +38,12 @@ function Course() {
   const [checkedState, setCheckedState] = useState([]);
   const [checkedIDs, setCheckedIDs] = useState([]);
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [selectedCourse, setSelectedCourse] = useState(null);
+  const {
+    isOpen: isDescriptionModalOpen,
+    onOpen: onDescriptionModalOpen,
+    onClose: onDescriptionModalClose,
+  } = useDisclosure();
   const [courseData, setCourseData] = useState([
     {
       id: "",
@@ -53,6 +59,11 @@ function Course() {
       isClosable: true,
     });
   }
+
+  const handleCourseClick = (course) => {
+    setSelectedCourse(course);
+    onDescriptionModalOpen();
+  };
 
   const fetchCourses = async () => {
     setIsLoaded(false);
@@ -140,6 +151,32 @@ function Course() {
               Toast={Toast}
             />
           </Box>
+          <Box position={"absolute"} alignSelf="flex-end" mr={6}>
+            <Modal
+              isOpen={isDescriptionModalOpen}
+              onClose={onDescriptionModalClose}
+            >
+              <ModalOverlay />
+              <ModalContent>
+                <ModalHeader>Ders Açıklaması</ModalHeader>
+                <ModalCloseButton />
+                <ModalBody>
+                  {selectedCourse
+                    ? selectedCourse.description
+                    : "Açıklama Mevcut Değil."}
+                </ModalBody>
+                <ModalFooter>
+                  <Button
+                    colorScheme="blue"
+                    mr={3}
+                    onClick={onDescriptionModalClose}
+                  >
+                    Tamam
+                  </Button>
+                </ModalFooter>
+              </ModalContent>
+            </Modal>
+          </Box>
           <Box position={"absolute"} borderRadius={"md"}>
             <CourseEdit
               isOpen={isOpen}
@@ -172,6 +209,7 @@ function Course() {
                           </button>
                         </Th>
                         <Th textAlign={"center"}>Ders Kodu</Th>
+                        <Th textAlign={"center"}>Ders Adı</Th>
                         <Th textAlign={"center"}>Fakülte</Th>
                         <Th textAlign={"center"}>Düzenle</Th>
                       </Tr>
@@ -185,7 +223,12 @@ function Course() {
                               onChange={() => handleCheck(index, course.id)}
                             />
                           </Td>
-                          <Td textAlign={"center"}>{course.code}</Td>
+                          <Td textAlign={"center"}>
+                            <Button onClick={() => handleCourseClick(course)}>
+                              {course.code}
+                            </Button>
+                          </Td>
+                          <Td textAlign={"center"}>{course.name}</Td>
                           <Td textAlign={"center"}>{course.facultyName}</Td>
                           <Td textAlign={"center"}>
                             <Button
@@ -194,6 +237,8 @@ function Course() {
                                 setCourseData({
                                   id: course.id,
                                   code: course.code,
+                                  name: course.name,
+                                  description: course.description,
                                   facultyID: course.facultyID,
                                 });
                               }}

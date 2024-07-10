@@ -196,7 +196,6 @@ function Faculty() {
                                 });
                                 onOpen();
                               }}
-                              colorScheme="teal"
                             >
                               Düzenle
                             </Button>

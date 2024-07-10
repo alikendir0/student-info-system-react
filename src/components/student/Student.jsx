@@ -37,7 +37,9 @@ function Student() {
       id: "",
       firstName: "",
       lastName: "",
-      studentNo: "",
+      departmentName: "",
+      departmentID: "",
+      gender: "",
     },
   ]);
   const [checkedState, setCheckedState] = useState([]);
@@ -47,6 +49,8 @@ function Student() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [isStudentEditOpen, setIsStudentEditOpen] = useState(false);
   const [sections, setSections] = useState([]);
+  const [isDeleteConfirmModalOpen, setIsDeleteConfirmModalOpen] =
+    useState(false);
   const [isSectionsModalOpen, setIsSectionsModalOpen] = useState(false);
   const [sectionsData, setSectionsData] = useState({
     id: "",
@@ -68,6 +72,15 @@ function Student() {
   };
 
   const closeStudentEdit = () => setIsStudentEditOpen(false);
+
+  const openDeleteConfirmModal = () => {
+    if (checkedIDs.length === 0) {
+      Toast("Lütfen Öğrenci Seçin!", "info");
+      return;
+    }
+    setIsDeleteConfirmModalOpen(true);
+  };
+  const closeDeleteConfirmModal = () => setIsDeleteConfirmModalOpen(false);
 
   useEffect(() => {
     setCheckedState(new Array(students.length).fill(false));
@@ -191,16 +204,34 @@ function Student() {
       );
       const responses = await Promise.all(deletePromises);
 
+      var successful = [];
+      var failed = [];
+      var error = [];
       responses.forEach((response) => {
-        if (!response.ok) {
-          console.error(
-            `Failed to delete student with ID: ${response.url.split("/").pop()}`
-          );
+        if (response.status === 200) {
+          successful.push(response.url.split("/").pop());
+        } else if (response.status === 409) {
+          failed.push(response.url.split("/").pop());
+        } else {
+          error.push(response.url.split("/").pop());
         }
       });
+
+      if (error.length > 0) {
+        Toast(`Hata: ${error}`, "error");
+      }
+
+      if (failed.length > 0) {
+        Toast(`Öğrenci(ler) Derse Sahip: ${failed}`, "warning");
+      }
+
+      if (successful.length > 0) {
+        Toast(`Başarıyla Silindi: ${successful}`, "success");
+      }
+
       fetchStudents();
+      closeDeleteConfirmModal();
       setCheckedIDs([]);
-      Toast("Başarıyla Silindi!", "success");
     } catch (error) {
       Toast("Hata!", "error");
       console.error("Error deleting selected students:", error);
@@ -262,6 +293,15 @@ function Student() {
     }
   };
 
+  function getGenderDisplay(genderCode) {
+    const genderMap = {
+      M: "Erkek",
+      F: "Kadın",
+      O: "Diğer",
+    };
+    return genderMap[genderCode] || "Bilinmiyor";
+  }
+
   return (
     <>
       {isLoaded ? (
@@ -269,11 +309,34 @@ function Student() {
           <Box position={"absolute"} alignSelf="flex-end" mr={6}>
             <StudentControls
               onStudentAdded={fetchStudents}
-              onStudentDeleted={deleteSelected}
+              onStudentDeleted={openDeleteConfirmModal}
               onInspectSections={handleOpenModal}
               onResetSelected={deleteSelectedSections}
               Toast={Toast}
             />
+          </Box>
+          <Box position={"absolute"} borderRadius={"md"}>
+            <Modal
+              isOpen={isDeleteConfirmModalOpen}
+              onClose={closeDeleteConfirmModal}
+            >
+              <ModalOverlay />
+              <ModalContent>
+                <ModalHeader>Delete Confirmation</ModalHeader>
+                <ModalCloseButton />
+                <ModalBody>
+                  Are you sure you want to delete the selected students?
+                </ModalBody>
+                <ModalFooter>
+                  <Button colorScheme="red" mr={3} onClick={deleteSelected}>
+                    Delete
+                  </Button>
+                  <Button variant="ghost" onClick={closeDeleteConfirmModal}>
+                    Cancel
+                  </Button>
+                </ModalFooter>
+              </ModalContent>
+            </Modal>
           </Box>
           <Box position={"absolute"} borderRadius={"md"}>
             <StudentEdit
@@ -415,6 +478,7 @@ function Student() {
                         <Th textAlign={"center"}>Ad</Th>
                         <Th textAlign={"center"}>Soyad</Th>
                         <Th textAlign={"center"}>T.C. Kimlik Numarası</Th>
+                        <Th textAlign={"center"}>Cinsiyet</Th>
                         <Th textAlign={"center"}>Öğrenci Numarası</Th>
                         <Th textAlign={"center"}>Bölüm</Th>
                         <Th textAlign={"center"}>Dersler</Th>
@@ -435,6 +499,9 @@ function Student() {
                           <Td textAlign={"center"}>{student.firstName}</Td>
                           <Td textAlign={"center"}>{student.lastName}</Td>
                           <Td textAlign={"center"}>{student.id}</Td>
+                          <Td textAlign={"center"}>
+                            {getGenderDisplay(student.gender)}
+                          </Td>
                           <Td textAlign={"center"}>{student.studentNo}</Td>
                           <Td textAlign={"center"}>
                             {student.department.name}
@@ -458,6 +525,7 @@ function Student() {
                                   firstName: student.firstName,
                                   lastName: student.lastName,
                                   studentNo: student.studentNo,
+                                  gender: student.gender,
                                   departmentName: student.department.name,
                                   departmentID: student.department.id,
                                 });

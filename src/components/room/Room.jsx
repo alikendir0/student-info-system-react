@@ -190,7 +190,6 @@ function Room() {
                                 onOpen();
                                 setRoomData(room);
                               }}
-                              colorScheme="teal"
                             >
                               Düzenle
                             </Button>

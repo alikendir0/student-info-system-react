@@ -77,15 +77,6 @@ function InstructorForm({ isOpen, onClose, onInstructorAdded, Toast }) {
         <ModalHeader>Öğretim Üyesi Ekle</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
-          <FormControl id="id" mb={4}>
-            <FormLabel htmlFor="instructor-id">T.C. Kimlik Numarası</FormLabel>
-            <Input
-              id="instructor-id"
-              type="text"
-              colorScheme="teal"
-              onChange={(e) => handleInputChange(e, "id")}
-            />
-          </FormControl>
           <FormControl id="firstName" mb={4}>
             <FormLabel htmlFor="instructor-name">Öğretim Üyesi Adı</FormLabel>
             <Input
@@ -104,6 +95,35 @@ function InstructorForm({ isOpen, onClose, onInstructorAdded, Toast }) {
               type="text"
               colorScheme="teal"
               onChange={(e) => handleInputChange(e, "lastName")}
+            />
+          </FormControl>
+          <FormControl id="gender" mb={4}>
+            <FormLabel htmlFor="student-gender">Cinsiyet</FormLabel>
+            <Select
+              placeholder="Cinsiyet Seçiniz"
+              id="student-gender"
+              type="text"
+              colorScheme="teal"
+              onChange={(e) => handleInputChange(e, "gender")}
+            >
+              <option key={"M"} value={"M"}>
+                Erkek
+              </option>
+              <option key={"F"} value={"F"}>
+                Kadın
+              </option>
+              <option key={"O"} value={"O"}>
+                Diğer
+              </option>
+            </Select>
+          </FormControl>
+          <FormControl id="id" mb={4}>
+            <FormLabel htmlFor="instructor-id">T.C. Kimlik Numarası</FormLabel>
+            <Input
+              id="instructor-id"
+              type="text"
+              colorScheme="teal"
+              onChange={(e) => handleInputChange(e, "id")}
             />
           </FormControl>
           <FormControl id="instructorNo" mb={4}>

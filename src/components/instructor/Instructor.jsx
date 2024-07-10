@@ -43,6 +43,7 @@ function Instructor() {
       id: "",
       firstName: "",
       lastName: "",
+      gender: "",
       instructorNo: "",
       facultyName: "",
       facultyID: "",
@@ -139,6 +140,15 @@ function Instructor() {
     setCheckedIDs(updatedCheckedIDs);
   };
 
+  function getGenderDisplay(genderCode) {
+    const genderMap = {
+      M: "Erkek",
+      F: "Kadın",
+      O: "Diğer",
+    };
+    return genderMap[genderCode] || "Bilinmiyor";
+  }
+
   return (
     <>
       {isLoaded ? (
@@ -184,7 +194,9 @@ function Instructor() {
                         </Th>
                         <Th textAlign={"center"}>Ad</Th>
                         <Th textAlign={"center"}>Soyad</Th>
+                        <Th textAlign={"center"}>Cinsiyet</Th>
                         <Th textAlign={"center"}>T.C. Kimlik Numarası</Th>
+
                         <Th textAlign={"center"}>Öğretim Numarası</Th>
                         <Th textAlign={"center"}>Fakülte</Th>
                         <Th textAlign={"center"}>Düzenle</Th>
@@ -203,6 +215,9 @@ function Instructor() {
                           </Td>
                           <Td textAlign={"center"}>{instructor.firstName}</Td>
                           <Td textAlign={"center"}>{instructor.lastName}</Td>
+                          <Td textAlign={"center"}>
+                            {getGenderDisplay(instructor.gender)}
+                          </Td>
                           <Td textAlign={"center"}>{instructor.id}</Td>
                           <Td textAlign={"center"}>
                             {instructor.instructorNo || "-"}
@@ -217,6 +232,7 @@ function Instructor() {
                                   firstName: instructor.firstName,
                                   lastName: instructor.lastName,
                                   instructorNo: instructor.instructorNo,
+                                  gender: instructor.gender,
                                   facultyName: instructor.facultyName,
                                   facultyID: instructor.facultyID,
                                 });

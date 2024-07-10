@@ -7,11 +7,18 @@ import {
   Input,
   useColorModeValue,
   Select,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-function SectionForm({ onClose, onSectionAdded, Toast }) {
+function SectionForm({ isOpen, onClose, onSectionAdded, Toast }) {
   const [sectionData, setSectionData] = useState({
     courseCode: "",
     day: "",
@@ -129,161 +136,154 @@ function SectionForm({ onClose, onSectionAdded, Toast }) {
   }, []);
 
   return (
-    <Stack
-      bg={useColorModeValue("gray.100", "gray.900")}
-      spacing={3}
-      borderRadius={"md"}
-      p={2}
-    >
-      <FormControl>
-        <FormLabel htmlFor="section-code" textAlign={"center"}>
-          Fakülte
-        </FormLabel>
-        <Select
-          id="faculty-select"
-          variant="filled"
-          placeholder="Fakülte"
-          onChange={(e) => handleInputChange(e, "faculty")}
-        >
-          {faculties.map((faculty) => (
-            <option key={faculty.name} value={faculty.id}>
-              {faculty.name}
-            </option>
-          ))}
-        </Select>
-      </FormControl>
-      <FormControl>
-        <FormLabel htmlFor="section-code" textAlign={"center"}>
-          Ders Kodu
-        </FormLabel>
-        <Select
-          id="course-code-select"
-          variant="filled"
-          placeholder="Ders Kodu"
-          disabled={!selectedFaculty}
-          onChange={(e) => handleInputChange(e, "courseCode")}
-        >
-          {courses.map((course) => (
-            <option key={course.code} value={course.code}>
-              {course.code}
-            </option>
-          ))}
-        </Select>
-      </FormControl>
-      <FormControl>
-        <FormLabel htmlFor="section-instructor" textAlign={"center"}>
-          Öğretim Görevlisi
-        </FormLabel>
-        <Select
-          id="instructor-select"
-          variant="filled"
-          placeholder="Öğretim Görevlisi"
-          disabled={!selectedFaculty}
-          onChange={(e) => handleInputChange(e, "instructorNo")}
-        >
-          {instructors.map((instructor) => (
-            <option
-              key={instructor.instructorNo}
-              value={instructor.instructorNo}
+    <Modal isOpen={isOpen} onClose={onClose}>
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader>Öğrenci Ekle</ModalHeader>
+        <ModalCloseButton />
+        <ModalBody>
+          <FormControl mb={4}>
+            <FormLabel htmlFor="section-code">Fakülte</FormLabel>
+            <Select
+              id="faculty-select"
+              variant="filled"
+              placeholder="Fakülte"
+              onChange={(e) => handleInputChange(e, "faculty")}
             >
-              {instructor.firstName} {instructor.lastName}
-            </option>
-          ))}
-        </Select>
-      </FormControl>
-      <FormControl>
-        <FormLabel htmlFor="section-day" textAlign={"center"}>
-          Gün
-        </FormLabel>
-        <Select
-          id="section-day"
-          variant="filled"
-          placeholder="Gün"
-          onChange={(e) => handleInputChange(e, "day")}
-        >
-          <option value="M">Pazartesi</option>
-          <option value="T">Salı</option>
-          <option value="W">Çarşamba</option>
-          <option value="TH">Perşembe</option>
-          <option value="F">Cuma</option>
-        </Select>
-      </FormControl>
-      <FormControl>
-        <FormLabel htmlFor="section-time" textAlign={"center"}>
-          Zaman
-        </FormLabel>
-        <Input
-          id="section-to-time"
-          type="time"
-          colorScheme="teal"
-          textAlign={"center"}
-          borderWidth="2px"
-          onChange={(e) => handleInputChange(e, "time")}
-        />
-        -
-        <Input
-          id="section-from-time"
-          type="time"
-          colorScheme="teal"
-          textAlign={"center"}
-          borderWidth="2px"
-          onChange={(e) => handleInputChange(e, "time")}
-        />
-      </FormControl>
-      <FormControl>
-        <FormLabel htmlFor="section-roomNo" textAlign={"center"}>
-          Sınıf
-        </FormLabel>
-        <Select
-          id="course-code-select"
-          variant="filled"
-          placeholder="Ders Kodu"
-          disabled={!selectedFaculty}
-          onChange={(e) => handleInputChange(e, "roomNo")}
-        >
-          {rooms.map((room) => (
-            <option key={room.code} value={room.code}>
-              {room.code}
-            </option>
-          ))}
-        </Select>
-      </FormControl>
-      <FormControl>
-        <FormLabel htmlFor="section-capacity" textAlign={"center"}>
-          Kapasite
-        </FormLabel>
-        <Input
-          id="section-capacity"
-          type="text"
-          colorScheme="teal"
-          textAlign={"center"}
-          borderWidth="2px"
-          placeholder={recommendedCapacity}
-          onChange={(e) => handleInputChange(e, "capacity")}
-        />
-      </FormControl>
-      <FormControl>
-        <FormLabel htmlFor="section-noStudents" textAlign={"center"}>
-          Mevcut Öğrenci Sayısı
-        </FormLabel>
-        <Input
-          id="section-noStudents"
-          type="text"
-          colorScheme="teal"
-          textAlign={"center"}
-          borderWidth="2px"
-          onChange={(e) => handleInputChange(e, "noStudents")}
-        />
-      </FormControl>
-      <Button variant="solid" colorScheme="teal" onClick={handleAddClick}>
-        Kaydet
-      </Button>
-      {onClose && (
-        <Button variant="solid" colorScheme="teal" onClick={onClose}>
-          İptal
-        </Button>
-      )}
-    </Stack>
+              {faculties.map((faculty) => (
+                <option key={faculty.name} value={faculty.id}>
+                  {faculty.name}
+                </option>
+              ))}
+            </Select>
+          </FormControl>
+          <FormControl mb={4}>
+            <FormLabel htmlFor="section-code">Ders Kodu</FormLabel>
+            <Select
+              id="course-code-select"
+              variant="filled"
+              placeholder="Ders Kodu"
+              disabled={!selectedFaculty}
+              onChange={(e) => handleInputChange(e, "courseCode")}
+            >
+              {courses.map((course) => (
+                <option key={course.code} value={course.code}>
+                  {course.code}
+                </option>
+              ))}
+            </Select>
+          </FormControl>
+          <FormControl mb={4}>
+            <FormLabel htmlFor="section-instructor">
+              Öğretim Görevlisi
+            </FormLabel>
+            <Select
+              id="instructor-select"
+              variant="filled"
+              placeholder="Öğretim Görevlisi"
+              disabled={!selectedFaculty}
+              onChange={(e) => handleInputChange(e, "instructorNo")}
+            >
+              {instructors.map((instructor) => (
+                <option
+                  key={instructor.instructorNo}
+                  value={instructor.instructorNo}
+                >
+                  {instructor.firstName} {instructor.lastName}
+                </option>
+              ))}
+            </Select>
+          </FormControl>
+          <FormControl mb={4}>
+            <FormLabel htmlFor="section-day">Gün</FormLabel>
+            <Select
+              id="section-day"
+              variant="filled"
+              placeholder="Gün"
+              onChange={(e) => handleInputChange(e, "day")}
+            >
+              <option value="M">Pazartesi</option>
+              <option value="T">Salı</option>
+              <option value="W">Çarşamba</option>
+              <option value="TH">Perşembe</option>
+              <option value="F">Cuma</option>
+            </Select>
+          </FormControl>
+          <FormControl mb={4}>
+            <FormLabel htmlFor="section-time">Zaman</FormLabel>
+            <Input
+              id="section-to-time"
+              type="time"
+              colorScheme="teal"
+              borderWidth="2px"
+              onChange={(e) => handleInputChange(e, "time")}
+            />
+            -
+            <Input
+              id="section-from-time"
+              type="time"
+              colorScheme="teal"
+              borderWidth="2px"
+              onChange={(e) => handleInputChange(e, "time")}
+            />
+          </FormControl>
+          <FormControl mb={4}>
+            <FormLabel htmlFor="section-roomNo">Sınıf</FormLabel>
+            <Select
+              id="course-code-select"
+              variant="filled"
+              placeholder="Ders Kodu"
+              disabled={!selectedFaculty}
+              onChange={(e) => handleInputChange(e, "roomNo")}
+            >
+              {rooms.map((room) => (
+                <option key={room.code} value={room.code}>
+                  {room.code}
+                </option>
+              ))}
+            </Select>
+          </FormControl>
+          <FormControl mb={4}>
+            <FormLabel htmlFor="section-capacity">Kapasite</FormLabel>
+            <Input
+              id="section-capacity"
+              type="text"
+              colorScheme="teal"
+              borderWidth="2px"
+              placeholder={recommendedCapacity}
+              onChange={(e) => handleInputChange(e, "capacity")}
+            />
+          </FormControl>
+          <FormControl mb={4}>
+            <FormLabel htmlFor="section-noStudents">
+              Mevcut Öğrenci Sayısı
+            </FormLabel>
+            <Input
+              id="section-noStudents"
+              type="text"
+              colorScheme="teal"
+              borderWidth="2px"
+              onChange={(e) => handleInputChange(e, "noStudents")}
+            />
+          </FormControl>
+        </ModalBody>
+        <ModalFooter>
+          <Button
+            variant="solid"
+            colorScheme="teal"
+            onClick={handleAddClick}
+            mr={3}
+          >
+            Ekle
+          </Button>
+          {onClose && (
+            <Button variant="solid" onClick={onClose}>
+              İptal
+            </Button>
+          )}
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
   );
 }
 

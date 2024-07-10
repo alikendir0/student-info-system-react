@@ -81,7 +81,7 @@ function StudentEdit({ isOpen, onClose, studentData, fetchStudents, Toast }) {
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Öğretim Üyesi Düzenle</ModalHeader>
+          <ModalHeader>Öğrenci Düzenle</ModalHeader>
           <ModalCloseButton />
           {student.firstName ? (
             <ModalBody>
@@ -113,8 +113,28 @@ function StudentEdit({ isOpen, onClose, studentData, fetchStudents, Toast }) {
                   onChange={handleInputChange}
                 />
               </FormControl>
+              <FormControl id="gender" mb={4}>
+                <FormLabel htmlFor="student-gender">Cinsiyet</FormLabel>
+                <Select
+                  id="gender-select"
+                  variant="filled"
+                  name="gender"
+                  value={student.gender}
+                  onChange={handleInputChange}
+                >
+                  <option key={"M"} value={"M"}>
+                    Erkek
+                  </option>
+                  <option key={"F"} value={"F"}>
+                    Kadın
+                  </option>
+                  <option key={"O"} value={"O"}>
+                    Diğer
+                  </option>
+                </Select>
+              </FormControl>
               <FormControl id="studentNo" mb={4}>
-                <FormLabel>Öğretim No</FormLabel>
+                <FormLabel>Öğrenci Numarası</FormLabel>
                 <Input
                   disabled={true}
                   type="text"

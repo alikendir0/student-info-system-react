@@ -14,6 +14,7 @@ import {
   ModalFooter,
   ModalBody,
   ModalCloseButton,
+  Textarea,
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import axios from "axios";
@@ -96,6 +97,22 @@ function CourseForm({ isOpen, onClose, onCourseAdded, Toast }) {
               variant="filled"
               placeholder="Ders Kodu"
               onChange={(e) => handleInputChange(e, "code")}
+            />
+          </FormControl>
+          <FormControl id="name" mb={4}>
+            <FormLabel>Ad</FormLabel>
+            <Input
+              type="text"
+              variant="filled"
+              onChange={(e) => handleInputChange(e, "name")}
+            />
+          </FormControl>
+          <FormControl id="description" mb={4}>
+            <FormLabel>Açıklama</FormLabel>
+            <Textarea
+              type="text"
+              variant="filled"
+              onChange={(e) => handleInputChange(e, "description")}
             />
           </FormControl>
         </ModalBody>

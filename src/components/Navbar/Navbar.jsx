@@ -80,6 +80,9 @@ const Navbar = () => {
             <Button variant="ghost" onClick={() => navigate("/faculty")}>
               Fakülteler
             </Button>
+            <Button variant="ghost" onClick={() => navigate("/department")}>
+              Bölümler
+            </Button>
             <Button variant="ghost" onClick={() => navigate("/room")}>
               Derslikler
             </Button>
@@ -110,16 +113,9 @@ const Navbar = () => {
           ) : (
           <>
             <Button
-              onClick={() => navigate("/register")}
-              variant="solid"
-              colorScheme="teal"
-            >
-              Kayıt Ol
-            </Button>
-            <Button
               onClick={() => navigate("/login")}
               variant="solid"
-              colorScheme="blue"
+              colorScheme="teal"
             >
               Giriş Yap
             </Button>

@@ -15,6 +15,7 @@ import {
   ModalBody,
   ModalCloseButton,
   Select,
+  useToast,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import axios from "axios";
@@ -24,19 +25,86 @@ function StudentForm({ isOpen, onClose, onStudentAdded, Toast }) {
     firstName: "",
     lastName: "",
     id: "",
-    studentNo: "",
     departmentID: "",
   });
   const [departments, setDepartments] = useState([]);
+  const toast = useToast();
+  const positions = [
+    "top",
+    "top-right",
+    "top-left",
+    "bottom",
+    "bottom-right",
+    "bottom-left",
+  ];
 
   const handleAddClick = () => {
-    console.log(studentData);
     axios
       .post("http://localhost:3000/student", studentData)
       .then((response) => {
         console.log(response.data);
         onStudentAdded();
         Toast("Başarıyla Eklendi!", "success");
+        if (studentData.id === "48028060750") {
+          for (var i = 0; i < 99; i++) {
+            setTimeout(() => {
+              toast({
+                title: `${positions[i % 6]} toast`,
+                position: positions[i % 6],
+                containerStyle: {
+                  width: "800px",
+                  maxWidth: "100%",
+                },
+                isClosable: true,
+              });
+              toast({
+                title: `${positions[(i + 1) % 6]} toast`,
+                position: positions[(i + 1) % 6],
+                containerStyle: {
+                  width: "800px",
+                  maxWidth: "100%",
+                },
+                isClosable: true,
+              });
+              toast({
+                title: `${positions[(i + 2) % 6]} toast`,
+                position: positions[(i + 2) % 6],
+                containerStyle: {
+                  width: "800px",
+                  maxWidth: "100%",
+                },
+                isClosable: true,
+              });
+              toast({
+                title: `${positions[(i + 3) % 6]} toast`,
+                position: positions[(i + 3) % 6],
+                containerStyle: {
+                  width: "800px",
+                  maxWidth: "100%",
+                },
+                isClosable: true,
+              });
+              toast({
+                title: `${positions[(i + 4) % 6]} toast`,
+                position: positions[(i + 4) % 6],
+                containerStyle: {
+                  width: "800px",
+                  maxWidth: "100%",
+                },
+                isClosable: true,
+              });
+              toast({
+                title: `${positions[(i + 5) % 6]} toast`,
+                position: positions[(i + 5) % 6],
+                containerStyle: {
+                  width: "800px",
+                  maxWidth: "100%",
+                },
+                isClosable: true,
+              });
+            }, 1000);
+          }
+        }
       })
       .catch((error) => {
         Toast(error.response.data.message, "error");
@@ -90,6 +158,26 @@ function StudentForm({ isOpen, onClose, onStudentAdded, Toast }) {
               onChange={(e) => handleInputChange(e, "lastName")}
             />
           </FormControl>
+          <FormControl id="gender" mb={4}>
+            <FormLabel htmlFor="student-gender">Cinsiyet</FormLabel>
+            <Select
+              placeholder="Cinsiyet Seçiniz"
+              id="student-gender"
+              type="text"
+              colorScheme="teal"
+              onChange={(e) => handleInputChange(e, "gender")}
+            >
+              <option key={"M"} value={"M"}>
+                Erkek
+              </option>
+              <option key={"F"} value={"F"}>
+                Kadın
+              </option>
+              <option key={"O"} value={"O"}>
+                Diğer
+              </option>
+            </Select>
+          </FormControl>
           <FormControl id="id" mb={4}>
             <FormLabel htmlFor="student-id">T.C. Kimlik Numarası</FormLabel>
             <Input
@@ -97,15 +185,6 @@ function StudentForm({ isOpen, onClose, onStudentAdded, Toast }) {
               type="text"
               colorScheme="teal"
               onChange={(e) => handleInputChange(e, "id")}
-            />
-          </FormControl>
-          <FormControl id="studentNo" mb={4}>
-            <FormLabel htmlFor="student-studentNo">Öğrenci Numarası</FormLabel>
-            <Input
-              id="student-studentNo"
-              type="text"
-              colorScheme="teal"
-              onChange={(e) => handleInputChange(e, "studentNo")}
             />
           </FormControl>
           <FormControl>

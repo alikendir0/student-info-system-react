@@ -121,6 +121,26 @@ function InstructorEdit({
                   onChange={handleInputChange}
                 />
               </FormControl>
+              <FormControl id="gender" mb={4}>
+                <FormLabel htmlFor="instructor-gender">Cinsiyet</FormLabel>
+                <Select
+                  id="gender-select"
+                  variant="filled"
+                  name="gender"
+                  value={instructor.gender}
+                  onChange={handleInputChange}
+                >
+                  <option key={"M"} value={"M"}>
+                    Erkek
+                  </option>
+                  <option key={"F"} value={"F"}>
+                    Kadın
+                  </option>
+                  <option key={"O"} value={"O"}>
+                    Diğer
+                  </option>
+                </Select>
+              </FormControl>
               <FormControl id="instructorNo" mb={4}>
                 <FormLabel>Öğretim Üyesi Numarası</FormLabel>
                 <Input

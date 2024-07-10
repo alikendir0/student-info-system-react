@@ -37,6 +37,7 @@ function SectionControls({ onSectionAdded, onSectionDeleted, Toast }) {
       <Box position={"absolute"} borderRadius={"md"}>
         {showForm && (
           <SectionForm
+            isOpen={showForm}
             onClose={toggleFormVisibility}
             onSectionAdded={onSectionAdded}
             Toast={Toast}

@@ -26,6 +26,7 @@ import {
   FormLabel,
   Input,
   Select,
+  Textarea,
 } from "@chakra-ui/react";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
@@ -53,7 +54,6 @@ function CourseEdit({ isOpen, onClose, courseData, fetchCourses, Toast }) {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setCourse({ ...course, [name]: value });
-    console.log(course);
   };
 
   useEffect(() => {
@@ -106,6 +106,25 @@ function CourseEdit({ isOpen, onClose, courseData, fetchCourses, Toast }) {
                   onChange={handleInputChange}
                 />
               </FormControl>
+              <FormControl id="name" mb={4}>
+                <FormLabel>Ad</FormLabel>
+                <Input
+                  type="text"
+                  name="name"
+                  value={course.name}
+                  onChange={handleInputChange}
+                />
+              </FormControl>
+              <FormControl id="description" mb={4}>
+                <FormLabel>Açıklama</FormLabel>
+                <Textarea
+                  type="text"
+                  name="description"
+                  value={course.description}
+                  onChange={handleInputChange}
+                />
+              </FormControl>
+
               <FormControl id="faculty">
                 <FormLabel htmlFor="course-faculty">Fakülte</FormLabel>
                 <Select

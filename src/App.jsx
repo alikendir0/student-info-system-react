@@ -9,6 +9,7 @@ import Faculty from "./components/faculty/Faculty.jsx";
 import Login from "./components/login/Login.jsx";
 import Navbar from "./components/Navbar/Navbar.jsx";
 import Room from "./components/room/Room.jsx";
+import Department from "./components/department/Department.jsx";
 
 import { Routes, Route, useNavigate } from "react-router-dom";
 import { ChakraProvider, Box, Flex } from "@chakra-ui/react";
@@ -26,6 +27,7 @@ const App = () => {
           <Route path="/instructor" element={<Instructor />} />
           <Route path="/faculty" element={<Faculty />} />
           <Route path="/room" element={<Room />} />
+          <Route path="/department" element={<Department />} />
         </Routes>
       </Box>
     </ChakraProvider>
