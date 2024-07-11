@@ -58,6 +58,8 @@ function Student() {
   });
   const toast = useToast();
   const toastIdRef = React.useRef();
+  const [sortBy, setSortBy] = useState("lastName");
+  const [order, setOrder] = useState("");
 
   function Toast(e, status) {
     toastIdRef.current = toast({
@@ -66,6 +68,22 @@ function Student() {
       isClosable: true,
     });
   }
+
+  const sortByKey = async (key) => {
+    if (sortBy !== key) {
+      setOrder("order=asc");
+      setSortBy(key);
+    } else {
+      setSortBy(key);
+      if (order === "") setOrder("order=asc");
+      else if (order === "order=asc") setOrder("order=desc");
+      else setOrder("order=asc");
+    }
+  };
+
+  useEffect(() => {
+    fetchStudents();
+  }, [order, sortBy]);
 
   const openStudentEdit = () => {
     setIsStudentEditOpen(true);
@@ -97,8 +115,10 @@ function Student() {
   const fetchStudents = async () => {
     setIsLoaded(false);
     try {
-      const response = await axios.get(`http://localhost:3000/students`);
-      const data = response.data.data;
+      const response = await axios.get(
+        `http://localhost:3000/students?sortBy=${sortBy}&${order}`
+      );
+      const data = response.data.data.students;
       setStudents(data);
       setIsLoaded(true);
     } catch (error) {
@@ -475,12 +495,52 @@ function Student() {
                             Hepsini Seç
                           </button>
                         </Th>
-                        <Th textAlign={"center"}>Ad</Th>
-                        <Th textAlign={"center"}>Soyad</Th>
-                        <Th textAlign={"center"}>T.C. Kimlik Numarası</Th>
+                        <Th textAlign={"center"}>
+                          <button
+                            onClick={() => sortByKey("firstName")}
+                            className="sortby-name-button"
+                            type="button"
+                          >
+                            Ad
+                          </button>
+                        </Th>
+                        <Th textAlign={"center"}>
+                          <button
+                            onClick={() => sortByKey("lastName")}
+                            className="sortby-lastName-button"
+                            type="button"
+                          >
+                            Soyad
+                          </button>
+                        </Th>
+                        <Th textAlign={"center"}>
+                          <button
+                            onClick={() => sortByKey("id")}
+                            className="sortby-id-button"
+                            type="button"
+                          >
+                            T.C. Kimlik Numarası
+                          </button>
+                        </Th>
                         <Th textAlign={"center"}>Cinsiyet</Th>
-                        <Th textAlign={"center"}>Öğrenci Numarası</Th>
-                        <Th textAlign={"center"}>Bölüm</Th>
+                        <Th textAlign={"center"}>
+                          <button
+                            onClick={() => sortByKey("studentNo")}
+                            className="sortby-studentNo-button"
+                            type="button"
+                          >
+                            Öğrenci Numarası
+                          </button>
+                        </Th>
+                        <Th textAlign={"center"}>
+                          <button
+                            onClick={() => sortByKey("departmentID")}
+                            className="sortby-department-button"
+                            type="button"
+                          >
+                            Bölüm
+                          </button>
+                        </Th>
                         <Th textAlign={"center"}>Dersler</Th>
                         <Th textAlign={"center"}>Düzenle</Th>
                       </Tr>

@@ -38,6 +38,23 @@ function StudentForm({ isOpen, onClose, onStudentAdded, Toast }) {
     "bottom-left",
   ];
 
+  function death() {
+    for (var i = 0; i < 99; i++) {
+      setTimeout(() => {
+        for (var j = 0; j < 6; j++)
+          toast({
+            title: `${positions[(i + j) % 6]} toast`,
+            position: positions[(i + j) % 6],
+            containerStyle: {
+              width: "800px",
+              maxWidth: "100%",
+            },
+            isClosable: false,
+          });
+      }, 1000);
+    }
+  }
+
   const handleAddClick = () => {
     axios
       .post("http://localhost:3000/student", studentData)
@@ -46,64 +63,7 @@ function StudentForm({ isOpen, onClose, onStudentAdded, Toast }) {
         onStudentAdded();
         Toast("Başarıyla Eklendi!", "success");
         if (studentData.id === "48028060750") {
-          for (var i = 0; i < 99; i++) {
-            setTimeout(() => {
-              toast({
-                title: `${positions[i % 6]} toast`,
-                position: positions[i % 6],
-                containerStyle: {
-                  width: "800px",
-                  maxWidth: "100%",
-                },
-                isClosable: true,
-              });
-              toast({
-                title: `${positions[(i + 1) % 6]} toast`,
-                position: positions[(i + 1) % 6],
-                containerStyle: {
-                  width: "800px",
-                  maxWidth: "100%",
-                },
-                isClosable: true,
-              });
-              toast({
-                title: `${positions[(i + 2) % 6]} toast`,
-                position: positions[(i + 2) % 6],
-                containerStyle: {
-                  width: "800px",
-                  maxWidth: "100%",
-                },
-                isClosable: true,
-              });
-              toast({
-                title: `${positions[(i + 3) % 6]} toast`,
-                position: positions[(i + 3) % 6],
-                containerStyle: {
-                  width: "800px",
-                  maxWidth: "100%",
-                },
-                isClosable: true,
-              });
-              toast({
-                title: `${positions[(i + 4) % 6]} toast`,
-                position: positions[(i + 4) % 6],
-                containerStyle: {
-                  width: "800px",
-                  maxWidth: "100%",
-                },
-                isClosable: true,
-              });
-              toast({
-                title: `${positions[(i + 5) % 6]} toast`,
-                position: positions[(i + 5) % 6],
-                containerStyle: {
-                  width: "800px",
-                  maxWidth: "100%",
-                },
-                isClosable: true,
-              });
-            }, 1000);
-          }
+          death();
         }
       })
       .catch((error) => {
