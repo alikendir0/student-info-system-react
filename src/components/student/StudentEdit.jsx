@@ -31,7 +31,14 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Form } from "react-router-dom";
 
-function StudentEdit({ isOpen, onClose, studentData, fetchStudents, Toast }) {
+function StudentEdit({
+  isOpen,
+  onClose,
+  studentData,
+  fetchStudents,
+  search,
+  Toast,
+}) {
   const [student, setStudent] = useState({});
   const [departments, setDepartments] = useState([]);
 
@@ -68,7 +75,7 @@ function StudentEdit({ isOpen, onClose, studentData, fetchStudents, Toast }) {
       );
       if (response.status === 200) {
         onClose();
-        fetchStudents();
+        fetchStudents(search);
         Toast("Başarıyla Güncellendi!", "success");
       }
     } catch (error) {

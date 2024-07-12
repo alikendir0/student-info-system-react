@@ -1,16 +1,19 @@
 import StudentControls from "./StudentControls";
 import StudentEdit from "./StudentEdit";
+import StudentSearch from "./StudentSearch";
 
 import {
   Flex,
   Box,
   Table,
+  Text,
   TableCaption,
   Thead,
   Tbody,
   Tr,
   Th,
   Td,
+  Tfoot,
   TableContainer,
   Checkbox,
   Modal,
@@ -28,6 +31,7 @@ import {
 } from "@chakra-ui/react";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { ChevronUpIcon, ChevronDownIcon } from "@chakra-ui/icons";
 
 function Student() {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -58,8 +62,28 @@ function Student() {
   });
   const toast = useToast();
   const toastIdRef = React.useRef();
-  const [sortBy, setSortBy] = useState("lastName");
+  const [sortBy, setSortBy] = useState("");
   const [order, setOrder] = useState("");
+  const {
+    isOpen: isSearchOpen,
+    onOpen: onSearchOpen,
+    onClose: onSeachClose,
+  } = useDisclosure();
+  const [resetButton, setResetButton] = useState(false);
+  const [searchParameters, setSearchParameters] = useState("");
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(5);
+  const [maxPage, setMaxPage] = useState(1);
+  const [noData, setNoData] = useState(0);
+  const [search, setSearch] = useState("");
+
+  const handleNext = () => {
+    if (page < maxPage) setPage(page + 1);
+  };
+
+  const handlePrev = () => {
+    if (page > 1) setPage(page - 1);
+  };
 
   function Toast(e, status) {
     toastIdRef.current = toast({
@@ -71,19 +95,19 @@ function Student() {
 
   const sortByKey = async (key) => {
     if (sortBy !== key) {
-      setOrder("order=asc");
+      setOrder("asc");
       setSortBy(key);
     } else {
       setSortBy(key);
-      if (order === "") setOrder("order=asc");
-      else if (order === "order=asc") setOrder("order=desc");
-      else setOrder("order=asc");
+      if (order === "") setOrder("asc");
+      else if (order === "asc") setOrder("desc");
+      else setOrder("asc");
     }
   };
 
   useEffect(() => {
-    fetchStudents();
-  }, [order, sortBy]);
+    fetchStudents(search);
+  }, [order, sortBy, page, pageSize]);
 
   const openStudentEdit = () => {
     setIsStudentEditOpen(true);
@@ -109,22 +133,38 @@ function Student() {
   }, [sections]);
 
   useEffect(() => {
-    fetchStudents();
-  }, []);
+    setPage(1);
+  }, [search]);
 
-  const fetchStudents = async () => {
+  const fetchStudents = async (credentials) => {
+    if (credentials && credentials !== "") {
+      var params = "";
+      credentials.split("&").forEach((param) => {
+        if (param === "") return;
+        const x = param.split("=");
+        params += `${x[0]}=${x[1]} `;
+        setSearchParameters(params);
+      });
+      setResetButton(true);
+      setSearch(credentials);
+    } else {
+      setResetButton(false);
+      setSearch("");
+    }
     setIsLoaded(false);
     try {
       const response = await axios.get(
-        `http://localhost:3000/students?sortBy=${sortBy}&${order}`
+        `http://localhost:3000/students?page=${page}&pageSize=${pageSize}&sortBy=${sortBy}&order=${order}&${credentials}`
       );
       const data = response.data.data.students;
+      setMaxPage(response.data.data.maxPage);
+      setNoData(response.data.data.count);
       setStudents(data);
       setIsLoaded(true);
     } catch (error) {
       Toast("Bağlantı Hatası!", "error");
       console.error("Failed to fetch students:", error);
-      setTimeout(fetchStudents, 5000);
+      setTimeout(fetchStudents(credentials), 5000);
     }
   };
 
@@ -249,7 +289,7 @@ function Student() {
         Toast(`Başarıyla Silindi: ${successful}`, "success");
       }
 
-      fetchStudents();
+      fetchStudents(search);
       closeDeleteConfirmModal();
       setCheckedIDs([]);
     } catch (error) {
@@ -326,6 +366,34 @@ function Student() {
     <>
       {isLoaded ? (
         <Flex direction="column" mt={8} height="100vh">
+          <Button
+            colorScheme="blue"
+            onClick={onSearchOpen}
+            mb={4}
+            position={"absolute"}
+          >
+            Öğrenci Ara
+          </Button>
+          {resetButton && (
+            <>
+              <Button
+                colorScheme="blue"
+                onClick={() => fetchStudents()}
+                mb={4}
+                position={"absolute"}
+                ml={130}
+              >
+                Sıfırla
+              </Button>
+              <Box>
+                <Text>
+                  <span style={{ color: "green" }}>{searchParameters}</span>{" "}
+                  için sonuçlar gösteriliyor,{" "}
+                  <span style={{ color: "red" }}>{noData}</span> sonuç bulundu.
+                </Text>
+              </Box>
+            </>
+          )}
           <Box position={"absolute"} alignSelf="flex-end" mr={6}>
             <StudentControls
               onStudentAdded={fetchStudents}
@@ -359,11 +427,21 @@ function Student() {
             </Modal>
           </Box>
           <Box position={"absolute"} borderRadius={"md"}>
+            <StudentSearch
+              isOpen={isSearchOpen}
+              onClose={onSeachClose}
+              fetchStudents={fetchStudents}
+              search={search}
+              Toast={Toast}
+            />
+          </Box>
+          <Box position={"absolute"} borderRadius={"md"}>
             <StudentEdit
               isOpen={isStudentEditOpen}
               onClose={closeStudentEdit}
               studentData={studentData}
               fetchStudents={fetchStudents}
+              search={search}
               Toast={Toast}
             />
           </Box>
@@ -481,128 +559,179 @@ function Student() {
                 </ModalContent>
               </Modal>
               {students.length !== 0 ? (
-                <TableContainer>
-                  <Table variant="striped" colorScheme="teal">
-                    <TableCaption> Öğrenci Listesi</TableCaption>
-                    <Thead>
-                      <Tr>
-                        <Th textAlign={"center"}>
-                          <button
-                            onClick={handleSelectAll}
-                            className="select-all-button"
-                            type="button"
-                          >
-                            Hepsini Seç
-                          </button>
-                        </Th>
-                        <Th textAlign={"center"}>
-                          <button
-                            onClick={() => sortByKey("firstName")}
-                            className="sortby-name-button"
-                            type="button"
-                          >
-                            Ad
-                          </button>
-                        </Th>
-                        <Th textAlign={"center"}>
-                          <button
-                            onClick={() => sortByKey("lastName")}
-                            className="sortby-lastName-button"
-                            type="button"
-                          >
-                            Soyad
-                          </button>
-                        </Th>
-                        <Th textAlign={"center"}>
-                          <button
-                            onClick={() => sortByKey("id")}
-                            className="sortby-id-button"
-                            type="button"
-                          >
-                            T.C. Kimlik Numarası
-                          </button>
-                        </Th>
-                        <Th textAlign={"center"}>Cinsiyet</Th>
-                        <Th textAlign={"center"}>
-                          <button
-                            onClick={() => sortByKey("studentNo")}
-                            className="sortby-studentNo-button"
-                            type="button"
-                          >
-                            Öğrenci Numarası
-                          </button>
-                        </Th>
-                        <Th textAlign={"center"}>
-                          <button
-                            onClick={() => sortByKey("departmentID")}
-                            className="sortby-department-button"
-                            type="button"
-                          >
-                            Bölüm
-                          </button>
-                        </Th>
-                        <Th textAlign={"center"}>Dersler</Th>
-                        <Th textAlign={"center"}>Düzenle</Th>
-                      </Tr>
-                    </Thead>
-                    <Tbody>
-                      {students.map((student, index) => (
-                        <Tr key={student.id}>
-                          <Td textAlign={"center"}>
-                            <Checkbox
-                              isChecked={checkedState[index]}
-                              onChange={() =>
-                                handleCheck(index, student.studentNo)
-                              }
-                            />
-                          </Td>
-                          <Td textAlign={"center"}>{student.firstName}</Td>
-                          <Td textAlign={"center"}>{student.lastName}</Td>
-                          <Td textAlign={"center"}>{student.id}</Td>
-                          <Td textAlign={"center"}>
-                            {getGenderDisplay(student.gender)}
-                          </Td>
-                          <Td textAlign={"center"}>{student.studentNo}</Td>
-                          <Td textAlign={"center"}>
-                            {student.department.name}
-                          </Td>
-                          <Td textAlign={"center"}>
-                            <Button
-                              className="dersler"
+                <>
+                  <TableContainer>
+                    <Table variant="striped" colorScheme="teal">
+                      <TableCaption> Öğrenci Listesi</TableCaption>
+                      <Thead>
+                        <Tr>
+                          <Th textAlign={"center"} width={"5%"}>
+                            <button
+                              onClick={handleSelectAll}
+                              className="select-all-button"
                               type="button"
-                              onClick={() =>
-                                handleDerslerClick(student.studentNo)
-                              }
                             >
-                              Dersler
-                            </Button>
-                          </Td>
-                          <Td textAlign={"center"}>
-                            <Button
-                              onClick={() => {
-                                setStudentData({
-                                  id: student.id,
-                                  firstName: student.firstName,
-                                  lastName: student.lastName,
-                                  studentNo: student.studentNo,
-                                  gender: student.gender,
-                                  departmentName: student.department.name,
-                                  departmentID: student.department.id,
-                                });
-                                openStudentEdit();
-                              }}
+                              Hepsini Seç
+                            </button>
+                          </Th>
+                          <Th textAlign={"center"} width={"15%"}>
+                            <button
+                              onClick={() => sortByKey("firstName")}
+                              className="sortby-name-button"
+                              type="button"
                             >
-                              Düzenle
-                            </Button>
-                          </Td>
+                              Ad
+                              {sortBy === "firstName" &&
+                                (order === "asc" ? (
+                                  <ChevronDownIcon />
+                                ) : (
+                                  <ChevronUpIcon />
+                                ))}
+                            </button>
+                          </Th>
+                          <Th textAlign={"center"} width={"15%"}>
+                            <button
+                              onClick={() => sortByKey("lastName")}
+                              className="sortby-lastName-button"
+                              type="button"
+                            >
+                              Soyad
+                              {sortBy === "lastName" &&
+                                (order === "asc" ? (
+                                  <ChevronDownIcon />
+                                ) : (
+                                  <ChevronUpIcon />
+                                ))}
+                            </button>
+                          </Th>
+                          <Th textAlign={"center"} width={"15%"}>
+                            <button
+                              onClick={() => sortByKey("id")}
+                              className="sortby-id-button"
+                              type="button"
+                            >
+                              T.C. Kimlik Numarası
+                              {sortBy === "id" &&
+                                (order === "asc" ? (
+                                  <ChevronDownIcon />
+                                ) : (
+                                  <ChevronUpIcon />
+                                ))}
+                            </button>
+                          </Th>
+                          <Th textAlign={"center"} width={"5%"}>
+                            Cinsiyet
+                          </Th>
+                          <Th textAlign={"center"} width={"10%"}>
+                            <button
+                              onClick={() => sortByKey("studentNo")}
+                              className="sortby-studentNo-button"
+                              type="button"
+                            >
+                              Öğrenci Numarası
+                              {sortBy === "studentNo" &&
+                                (order === "asc" ? (
+                                  <ChevronDownIcon />
+                                ) : (
+                                  <ChevronUpIcon />
+                                ))}
+                            </button>
+                          </Th>
+                          <Th textAlign={"center"} width={"10%"}>
+                            <button
+                              onClick={() => sortByKey("departmentID")}
+                              className="sortby-department-button"
+                              type="button"
+                            >
+                              Bölüm
+                              {sortBy === "departmentID" &&
+                                (order === "asc" ? (
+                                  <ChevronDownIcon />
+                                ) : (
+                                  <ChevronUpIcon />
+                                ))}
+                            </button>
+                          </Th>
+                          <Th textAlign={"center"} width={"10%"}>
+                            Dersler
+                          </Th>
+                          <Th textAlign={"center"} width={"10%"}>
+                            Düzenle
+                          </Th>
                         </Tr>
-                      ))}
-                    </Tbody>
-                  </Table>
-                </TableContainer>
+                      </Thead>
+                      <Tbody>
+                        {students.map((student, index) => (
+                          <Tr key={student.id}>
+                            <Td textAlign={"center"}>
+                              <Checkbox
+                                isChecked={checkedState[index]}
+                                onChange={() =>
+                                  handleCheck(index, student.studentNo)
+                                }
+                              />
+                            </Td>
+                            <Td textAlign={"center"}>{student.firstName}</Td>
+                            <Td textAlign={"center"}>{student.lastName}</Td>
+                            <Td textAlign={"center"}>{student.id}</Td>
+                            <Td textAlign={"center"}>
+                              {getGenderDisplay(student.gender)}
+                            </Td>
+                            <Td textAlign={"center"}>{student.studentNo}</Td>
+                            <Td textAlign={"center"}>
+                              {student.department.name}
+                            </Td>
+                            <Td textAlign={"center"}>
+                              <Button
+                                className="dersler"
+                                type="button"
+                                onClick={() =>
+                                  handleDerslerClick(student.studentNo)
+                                }
+                              >
+                                Dersler
+                              </Button>
+                            </Td>
+                            <Td textAlign={"center"}>
+                              <Button
+                                onClick={() => {
+                                  setStudentData({
+                                    id: student.id,
+                                    firstName: student.firstName,
+                                    lastName: student.lastName,
+                                    studentNo: student.studentNo,
+                                    gender: student.gender,
+                                    departmentName: student.department.name,
+                                    departmentID: student.department.id,
+                                  });
+                                  openStudentEdit();
+                                }}
+                              >
+                                Düzenle
+                              </Button>
+                            </Td>
+                          </Tr>
+                        ))}
+                      </Tbody>
+                    </Table>
+                  </TableContainer>
+                  <Button onClick={handlePrev} disabled={page <= 1} mr={2}>
+                    Geri
+                  </Button>
+                  <>
+                    {page}/{maxPage}
+                  </>
+                  <Button
+                    onClick={handleNext}
+                    disabled={page >= maxPage}
+                    ml={2}
+                  >
+                    İleri
+                  </Button>
+                </>
               ) : (
                 <Box textAlign="center" p={5}>
-                  Hiçbir Öğrenci Eklenmedi!
+                  Hiçbir Öğrenci Bulunamadı!
                 </Box>
               )}
             </Box>
