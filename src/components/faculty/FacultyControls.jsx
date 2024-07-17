@@ -1,5 +1,16 @@
 import React, { useState } from "react";
-import { Button, Stack, Box } from "@chakra-ui/react";
+import {
+  Button,
+  Stack,
+  Box,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  MenuGroup,
+  IconButton,
+} from "@chakra-ui/react";
+import { HamburgerIcon } from "@chakra-ui/icons";
 import FacultyForm from "./FacultyForm";
 
 function FacultyControls({ onFacultyAdded, onFacultyDeleted, Toast }) {
@@ -21,19 +32,19 @@ function FacultyControls({ onFacultyAdded, onFacultyDeleted, Toast }) {
 
   return (
     <Stack direction="column" spacing={2} align="center">
-      <Button colorScheme="blue" onClick={handleEditClick}>
-        Fakülte Kontrolü
-      </Button>
-      {showButtons && (
-        <>
-          <Button colorScheme="green" onClick={toggleFormVisibility}>
-            Ekle
-          </Button>
-          <Button colorScheme="red" onClick={onFacultyDeleted}>
-            Sil
-          </Button>
-        </>
-      )}
+      <Menu>
+        <MenuButton
+          as={IconButton}
+          aria-label="Options"
+          icon={<HamburgerIcon />}
+          variant="outline"
+        />
+        <MenuList minWidth={"30px"}>
+          <MenuGroup title="Fakülte Kontrolü" />
+          <MenuItem onClick={toggleFormVisibility}>Ekle</MenuItem>
+          <MenuItem onClick={onFacultyDeleted}>Sil</MenuItem>
+        </MenuList>
+      </Menu>
       <Box position={"absolute"} borderRadius={"md"}>
         {showForm && (
           <FacultyForm

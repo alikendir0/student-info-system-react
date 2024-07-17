@@ -21,12 +21,17 @@ import axios from "axios";
 function SectionForm({ isOpen, onClose, onSectionAdded, Toast }) {
   const [sectionData, setSectionData] = useState({
     courseCode: "",
-    day: "",
-    hour: "",
-    roomNo: "",
     capacity: "",
     noStudents: "",
     instructorNo: "",
+    "section-sessions": [
+      {
+        id: 0,
+        day: "",
+        hour: "",
+        roomNo: "",
+      },
+    ],
   });
   const [selectedFaculty, setSelectedFaculty] = useState(null);
   const [faculties, setFaculties] = useState([]);
@@ -37,6 +42,7 @@ function SectionForm({ isOpen, onClose, onSectionAdded, Toast }) {
   const [recommendedCapacity, setRecommendedCapacity] = useState("");
 
   const handleAddClick = () => {
+    console.log(sectionData);
     axios
       .post("http://localhost:3000/section", sectionData)
       .then((response) => {
@@ -75,6 +81,56 @@ function SectionForm({ isOpen, onClose, onSectionAdded, Toast }) {
         [property]: value,
       });
     }
+  };
+
+  const handleSessionChange = (e, index) => {
+    const { name, value } = e.target;
+    const sessions = sectionData["section-sessions"];
+    console.log(value);
+    if (name === "hour-from")
+      sessions[index] = {
+        ...sessions[index],
+        hour:
+          value +
+          "-" +
+          sectionData["section-sessions"][index].hour.split("-")[1],
+      };
+    else if (name === "hour-to")
+      sessions[index] = {
+        ...sessions[index],
+        hour:
+          sectionData["section-sessions"][index].hour.split("-")[0] +
+          "-" +
+          value,
+      };
+    else sessions[index] = { ...sessions[index], [name]: value };
+    setSectionData({ ...sectionData, ["section-sessions"]: sessions });
+  };
+
+  const addSession = () => {
+    const sessions = sectionData["section-sessions"];
+    const maxId = sessions.reduce(
+      (max, session) => Math.max(max, session.id),
+      0
+    );
+    sessions.push({
+      id: maxId + 1,
+      day: "",
+      hour: "",
+      roomNo: "",
+    });
+    setSectionData({ ...sectionData, ["section-sessions"]: sessions });
+  };
+
+  const deleteSession = async (id) => {
+    if (sectionData["section-sessions"].length === 1) {
+      Toast("Bir sınıfın en az bir oturumu olmalı!", "error");
+      return;
+    }
+    const sessions = sectionData["section-sessions"];
+    const newSessions = sessions.filter((session) => session.id !== id);
+    console.log(sessions);
+    setSectionData({ ...sectionData, ["section-sessions"]: newSessions });
   };
 
   const fetchFaculties = async () => {
@@ -194,55 +250,84 @@ function SectionForm({ isOpen, onClose, onSectionAdded, Toast }) {
               ))}
             </Select>
           </FormControl>
-          <FormControl mb={4}>
-            <FormLabel htmlFor="section-day">Gün</FormLabel>
-            <Select
-              id="section-day"
-              variant="filled"
-              placeholder="Gün"
-              onChange={(e) => handleInputChange(e, "day")}
-            >
-              <option value="M">Pazartesi</option>
-              <option value="T">Salı</option>
-              <option value="W">Çarşamba</option>
-              <option value="TH">Perşembe</option>
-              <option value="F">Cuma</option>
-            </Select>
-          </FormControl>
-          <FormControl mb={4}>
-            <FormLabel htmlFor="section-time">Zaman</FormLabel>
-            <Input
-              id="section-to-time"
-              type="time"
-              colorScheme="teal"
-              borderWidth="2px"
-              onChange={(e) => handleInputChange(e, "time")}
-            />
-            -
-            <Input
-              id="section-from-time"
-              type="time"
-              colorScheme="teal"
-              borderWidth="2px"
-              onChange={(e) => handleInputChange(e, "time")}
-            />
-          </FormControl>
-          <FormControl mb={4}>
-            <FormLabel htmlFor="section-roomNo">Sınıf</FormLabel>
-            <Select
-              id="course-code-select"
-              variant="filled"
-              placeholder="Ders Kodu"
-              disabled={!selectedFaculty}
-              onChange={(e) => handleInputChange(e, "roomNo")}
-            >
-              {rooms.map((room) => (
-                <option key={room.code} value={room.code}>
-                  {room.code}
-                </option>
-              ))}
-            </Select>
-          </FormControl>
+          {Array.from(sectionData["section-sessions"], (session, index) => (
+            <Stack key={index} spacing={4}>
+              <FormControl mb={4}>
+                <FormLabel>
+                  <Stack direction="row">
+                    <>Oturum {index + 1}</>
+                    <button
+                      onClick={addSession}
+                      className="select-all-button"
+                      type="button"
+                    >
+                      +
+                    </button>
+                    <button
+                      onClick={() =>
+                        deleteSession(sectionData["section-sessions"][index].id)
+                      }
+                      className="select-all-button"
+                      type="button"
+                    >
+                      -
+                    </button>
+                  </Stack>
+                </FormLabel>
+                <FormLabel htmlFor="section-day">Gün</FormLabel>
+                <Select
+                  id="section-day"
+                  variant="filled"
+                  placeholder="Gün"
+                  name="day"
+                  onChange={(e) => handleSessionChange(e, index)}
+                >
+                  <option value="M">Pazartesi</option>
+                  <option value="T">Salı</option>
+                  <option value="W">Çarşamba</option>
+                  <option value="TH">Perşembe</option>
+                  <option value="F">Cuma</option>
+                </Select>
+              </FormControl>
+              <FormControl mb={4}>
+                <FormLabel htmlFor="section-time">Zaman</FormLabel>
+                <Input
+                  id="section-to-time"
+                  type="time"
+                  colorScheme="teal"
+                  borderWidth="2px"
+                  name="hour-from"
+                  onChange={(e) => handleSessionChange(e, index)}
+                />
+                -
+                <Input
+                  id="section-from-time"
+                  type="time"
+                  colorScheme="teal"
+                  borderWidth="2px"
+                  name="hour-to"
+                  onChange={(e) => handleSessionChange(e, index)}
+                />
+              </FormControl>
+              <FormControl mb={4}>
+                <FormLabel htmlFor="section-roomNo">Sınıf</FormLabel>
+                <Select
+                  id="course-code-select"
+                  variant="filled"
+                  placeholder="Ders Kodu"
+                  disabled={!selectedFaculty}
+                  name="roomNo"
+                  onChange={(e) => handleSessionChange(e, index)}
+                >
+                  {rooms.map((room) => (
+                    <option key={room.code} value={room.code}>
+                      {room.code}
+                    </option>
+                  ))}
+                </Select>
+              </FormControl>
+            </Stack>
+          ))}
           <FormControl mb={4}>
             <FormLabel htmlFor="section-capacity">Kapasite</FormLabel>
             <Input

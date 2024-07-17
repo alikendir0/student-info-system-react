@@ -132,7 +132,15 @@ function Section() {
               <SectionEdit
                 isOpen={isOpen}
                 onClose={onClose}
-                sectionData={sectionData}
+                sectionData={{
+                  id: sectionData.id,
+                  courseCode: sectionData.courseCode,
+                  facultyID: sectionData.course.faculty.id,
+                  instructorNo: sectionData.instructor.instructorNo,
+                  capacity: sectionData.capacity,
+                  noStudents: sectionData.noStudents,
+                  "section-sessions": sectionData["section-sessions"],
+                }}
                 fetchSections={fetchSections}
                 Toast={Toast}
               />
@@ -178,12 +186,22 @@ function Section() {
                               onChange={() => handleCheck(index, section.id)}
                             />
                           </Td>
-                          <Td textAlign={"center"}>{section.courseCode}</Td>
-                          <Td textAlign={"center"}>{section.faculty}</Td>
+                          <Td textAlign={"center"}>{section.course.code}</Td>
                           <Td textAlign={"center"}>
-                            {section.hour} {section.day}
+                            {section.course.faculty.name}
                           </Td>
-                          <Td textAlign={"center"}>{section.roomNo}</Td>
+                          <Td textAlign={"center"}>
+                            {section["section-sessions"].map((session) => (
+                              <div key={session.id}>
+                                {session.hour} {session.day}
+                              </div>
+                            ))}
+                          </Td>
+                          <Td textAlign={"center"}>
+                            {section["section-sessions"].map((session) => (
+                              <div key={session.id}>{session.roomNo}</div>
+                            ))}
+                          </Td>
                           <Td textAlign={"center"}>
                             {section.instructor.firstName}{" "}
                             {section.instructor.lastName}

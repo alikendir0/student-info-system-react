@@ -1,5 +1,16 @@
 import React, { useState } from "react";
-import { Button, Stack, Box } from "@chakra-ui/react";
+import {
+  Button,
+  Stack,
+  Box,
+  MenuList,
+  MenuItem,
+  MenuButton,
+  Menu,
+  MenuGroup,
+  IconButton,
+} from "@chakra-ui/react";
+import { HamburgerIcon } from "@chakra-ui/icons";
 import DepartmentForm from "./DepartmentForm";
 
 function DepartmentControls({ onDepartmentAdded, onDepartmentDeleted, Toast }) {
@@ -21,19 +32,19 @@ function DepartmentControls({ onDepartmentAdded, onDepartmentDeleted, Toast }) {
 
   return (
     <Stack direction="column" spacing={2} align="center">
-      <Button colorScheme="blue" onClick={handleEditClick}>
-        Bölüm Kontrolü
-      </Button>
-      {showButtons && (
-        <>
-          <Button colorScheme="green" onClick={toggleFormVisibility}>
-            Ekle
-          </Button>
-          <Button colorScheme="red" onClick={onDepartmentDeleted}>
-            Sil
-          </Button>
-        </>
-      )}
+      <Menu>
+        <MenuButton
+          as={IconButton}
+          aria-label="Options"
+          icon={<HamburgerIcon />}
+          variant="outline"
+        />
+        <MenuList minWidth={"30px"}>
+          <MenuGroup title="Bölüm Kontrolü" />
+          <MenuItem onClick={toggleFormVisibility}>Ekle</MenuItem>
+          <MenuItem onClick={onDepartmentDeleted}>Sil</MenuItem>
+        </MenuList>
+      </Menu>
       <Box position={"absolute"} borderRadius={"md"}>
         {showForm && (
           <DepartmentForm

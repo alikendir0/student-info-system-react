@@ -1,5 +1,16 @@
 import React, { useState } from "react";
-import { Button, Stack, Box } from "@chakra-ui/react";
+import {
+  Button,
+  Stack,
+  Box,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  MenuGroup,
+  IconButton,
+} from "@chakra-ui/react";
+import { HamburgerIcon } from "@chakra-ui/icons";
 import RoomForm from "./RoomForm";
 
 function RoomControls({ onRoomAdded, onRoomDeleted, Toast }) {
@@ -21,19 +32,19 @@ function RoomControls({ onRoomAdded, onRoomDeleted, Toast }) {
 
   return (
     <Stack direction="column" spacing={2} align="center">
-      <Button colorScheme="blue" onClick={handleEditClick}>
-        Derslik Kontrolü
-      </Button>
-      {showButtons && (
-        <>
-          <Button colorScheme="green" onClick={toggleFormVisibility}>
-            Ekle
-          </Button>
-          <Button colorScheme="red" onClick={onRoomDeleted}>
-            Sil
-          </Button>
-        </>
-      )}
+      <Menu>
+        <MenuButton
+          as={IconButton}
+          aria-label="Options"
+          icon={<HamburgerIcon />}
+          variant="outline"
+        />
+        <MenuList minWidth={"30px"}>
+          <MenuGroup title="Derslik Kontrolü" />
+          <MenuItem onClick={toggleFormVisibility}>Ekle</MenuItem>
+          <MenuItem onClick={onRoomDeleted}>Sil</MenuItem>
+        </MenuList>
+      </Menu>
       <Box position={"absolute"} borderRadius={"md"}>
         {showForm && (
           <RoomForm

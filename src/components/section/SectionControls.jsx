@@ -1,5 +1,16 @@
 import React, { useState } from "react";
-import { Button, Stack, Box } from "@chakra-ui/react";
+import {
+  Button,
+  Stack,
+  Box,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  MenuGroup,
+  IconButton,
+} from "@chakra-ui/react";
+import { HamburgerIcon } from "@chakra-ui/icons";
 import SectionForm from "./SectionForm";
 
 function SectionControls({ onSectionAdded, onSectionDeleted, Toast }) {
@@ -21,19 +32,19 @@ function SectionControls({ onSectionAdded, onSectionDeleted, Toast }) {
 
   return (
     <Stack direction="column" spacing={2} align="center">
-      <Button colorScheme="blue" onClick={handleEditClick}>
-        Sınıf Kontrolü
-      </Button>
-      {showButtons && (
-        <>
-          <Button colorScheme="green" onClick={toggleFormVisibility}>
-            Ekle
-          </Button>
-          <Button colorScheme="red" onClick={onSectionDeleted}>
-            Sil
-          </Button>
-        </>
-      )}
+      <Menu>
+        <MenuButton
+          as={IconButton}
+          aria-label="Options"
+          icon={<HamburgerIcon />}
+          variant="outline"
+        />
+        <MenuList minWidth={"30px"}>
+          <MenuGroup title="Sınıf Kontrolü" />
+          <MenuItem onClick={toggleFormVisibility}>Ekle</MenuItem>
+          <MenuItem onClick={onSectionDeleted}>Sil</MenuItem>
+        </MenuList>
+      </Menu>
       <Box position={"absolute"} borderRadius={"md"}>
         {showForm && (
           <SectionForm

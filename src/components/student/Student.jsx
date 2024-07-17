@@ -161,6 +161,7 @@ function Student() {
       setNoData(response.data.data.count);
       setStudents(data);
       setIsLoaded(true);
+      setCheckedIDs([]);
     } catch (error) {
       Toast("Bağlantı Hatası!", "error");
       console.error("Failed to fetch students:", error);
@@ -410,10 +411,10 @@ function Student() {
             >
               <ModalOverlay />
               <ModalContent>
-                <ModalHeader>Delete Confirmation</ModalHeader>
+                <ModalHeader>Silme Onayı</ModalHeader>
                 <ModalCloseButton />
                 <ModalBody>
-                  Are you sure you want to delete the selected students?
+                  Seçili öğrencileri silmek istediğinizden emin misiniz?
                 </ModalBody>
                 <ModalFooter>
                   <Button colorScheme="red" mr={3} onClick={deleteSelected}>
@@ -529,12 +530,24 @@ function Student() {
                                   }
                                 />
                               </Td>
-                              <Td textAlign={"center"}>{section.courseCode}</Td>
-                              <Td textAlign={"center"}>{section.faculty}</Td>
                               <Td textAlign={"center"}>
-                                {section.hour} {section.day}
+                                {section.course.code}
                               </Td>
-                              <Td textAlign={"center"}>{section.place}</Td>
+                              <Td textAlign={"center"}>
+                                {section.course.faculty.name}
+                              </Td>
+                              <Td textAlign={"center"}>
+                                {section["section-sessions"].map((session) => (
+                                  <div key={session.id}>
+                                    {session.hour} {session.day}
+                                  </div>
+                                ))}
+                              </Td>
+                              <Td textAlign={"center"}>
+                                {section["section-sessions"].map((session) => (
+                                  <div key={session.id}>{session.roomNo}</div>
+                                ))}
+                              </Td>
                               <Td textAlign={"center"}>
                                 {section.instructor.firstName}{" "}
                                 {section.instructor.lastName}
@@ -653,6 +666,21 @@ function Student() {
                             </button>
                           </Th>
                           <Th textAlign={"center"} width={"10%"}>
+                            <button
+                              onClick={() => sortByKey("period")}
+                              className="sortby-period-button"
+                              type="button"
+                            >
+                              Dönem
+                              {sortBy === "period" &&
+                                (order === "asc" ? (
+                                  <ChevronDownIcon />
+                                ) : (
+                                  <ChevronUpIcon />
+                                ))}
+                            </button>
+                          </Th>
+                          <Th textAlign={"center"} width={"10%"}>
                             Dersler
                           </Th>
                           <Th textAlign={"center"} width={"10%"}>
@@ -682,6 +710,11 @@ function Student() {
                               {student.department.name}
                             </Td>
                             <Td textAlign={"center"}>
+                              {Math.ceil(student.period / 2)}. Yıl{" "}
+                              {student.period % 2 === 0 ? "Bahar" : "Güz"}{" "}
+                              Dönemi
+                            </Td>
+                            <Td textAlign={"center"}>
                               <Button
                                 className="dersler"
                                 type="button"
@@ -702,6 +735,7 @@ function Student() {
                                     studentNo: student.studentNo,
                                     gender: student.gender,
                                     departmentName: student.department.name,
+                                    period: student.period,
                                     departmentID: student.department.id,
                                   });
                                   openStudentEdit();

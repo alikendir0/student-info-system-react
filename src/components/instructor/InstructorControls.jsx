@@ -1,5 +1,16 @@
 import React, { useState } from "react";
-import { Button, Stack, Box } from "@chakra-ui/react";
+import {
+  Button,
+  Stack,
+  Box,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  MenuGroup,
+  IconButton,
+} from "@chakra-ui/react";
+import { HamburgerIcon } from "@chakra-ui/icons";
 import InstructorForm from "./InstructorForm";
 
 function InstructorControls({ onInstructorAdded, onInstructorDeleted, Toast }) {
@@ -21,19 +32,19 @@ function InstructorControls({ onInstructorAdded, onInstructorDeleted, Toast }) {
 
   return (
     <Stack direction="column" spacing={2} align="center">
-      <Button colorScheme="blue" onClick={handleEditClick}>
-        Öğretim Üyesi Kontrolü
-      </Button>
-      {showButtons && (
-        <>
-          <Button colorScheme="green" onClick={toggleFormVisibility}>
-            Ekle
-          </Button>
-          <Button colorScheme="red" onClick={onInstructorDeleted}>
-            Sil
-          </Button>
-        </>
-      )}
+      <Menu>
+        <MenuButton
+          as={IconButton}
+          aria-label="Options"
+          icon={<HamburgerIcon />}
+          variant="outline"
+        />
+        <MenuList minWidth={"30px"}>
+          <MenuGroup title="Öğretim Üyesi Kontrolü" />
+          <MenuItem onClick={toggleFormVisibility}>Ekle</MenuItem>
+          <MenuItem onClick={onInstructorDeleted}>Sil</MenuItem>
+        </MenuList>
+      </Menu>
       <Box position={"absolute"} borderRadius={"md"}>
         {showForm && (
           <InstructorForm

@@ -1,15 +1,4 @@
 import {
-  Flex,
-  Box,
-  Table,
-  TableCaption,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
-  TableContainer,
-  Checkbox,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -53,10 +42,6 @@ function StudentEdit({
     }
   };
 
-  useEffect(() => {
-    setStudent(studentData);
-  }, [studentData]);
-
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setStudent({ ...student, [name]: value });
@@ -66,6 +51,10 @@ function StudentEdit({
     setStudent(studentData);
     fetchDepartments();
   }, [studentData]);
+
+  useEffect(() => {
+    console.log("Student data:", student);
+  }, [student]);
 
   const updateStudent = async () => {
     try {
@@ -164,6 +153,41 @@ function StudentEdit({
                       {department.name}
                     </option>
                   ))}
+                </Select>
+              </FormControl>
+              <FormControl id="period" mb={4}>
+                <FormLabel htmlFor="student-period">Yıl</FormLabel>
+                <Select
+                  id="period-select"
+                  variant="filled"
+                  name="period"
+                  value={student.period}
+                  onChange={handleInputChange}
+                >
+                  <option key={"1"} value={1}>
+                    1. Sınıf Güz Dönemi
+                  </option>
+                  <option key={"2"} value={2}>
+                    1. Sınıf Bahar Dönemi
+                  </option>
+                  <option key={"3"} value={3}>
+                    2. Sınıf Güz Dönemi
+                  </option>
+                  <option key={"4"} value={4}>
+                    2. Sınıf Bahar Dönemi
+                  </option>
+                  <option key={"5"} value={5}>
+                    3. Sınıf Güz Dönemi
+                  </option>
+                  <option key={"6"} value={6}>
+                    3. Sınıf Bahar Dönemi
+                  </option>
+                  <option key={"7"} value={7}>
+                    4. Sınıf Güz Dönemi
+                  </option>
+                  <option key={"8"} value={8}>
+                    4. Sınıf Bahar Dönemi
+                  </option>
                 </Select>
               </FormControl>
             </ModalBody>

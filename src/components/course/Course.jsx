@@ -65,6 +65,19 @@ function Course() {
     onDescriptionModalOpen();
   };
 
+  const fetchCourseDepartment = async (courseID) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:3000/course/department/period/${courseID}`
+      );
+      const data = response.data.data;
+      return data;
+    } catch (error) {
+      Toast("Bağlantı Hatası!", "error");
+      console.error("Failed to fetch course department:", error);
+    }
+  };
+
   const fetchCourses = async () => {
     setIsLoaded(false);
     try {
@@ -152,30 +165,33 @@ function Course() {
             />
           </Box>
           <Box position={"absolute"} alignSelf="flex-end" mr={6}>
-            <Modal
-              isOpen={isDescriptionModalOpen}
-              onClose={onDescriptionModalClose}
-            >
-              <ModalOverlay />
-              <ModalContent>
-                <ModalHeader>Ders Açıklaması</ModalHeader>
-                <ModalCloseButton />
-                <ModalBody>
-                  {selectedCourse
-                    ? selectedCourse.description
-                    : "Açıklama Mevcut Değil."}
-                </ModalBody>
-                <ModalFooter>
-                  <Button
-                    colorScheme="blue"
-                    mr={3}
-                    onClick={onDescriptionModalClose}
-                  >
-                    Tamam
-                  </Button>
-                </ModalFooter>
-              </ModalContent>
-            </Modal>
+            {isDescriptionModalOpen && (
+              <Modal
+                isOpen={isDescriptionModalOpen}
+                onClose={onDescriptionModalClose}
+              >
+                <ModalOverlay />
+                <ModalContent>
+                  <ModalHeader>Ders Açıklaması</ModalHeader>
+                  <ModalCloseButton />
+                  <ModalBody>
+                    {selectedCourse
+                      ? selectedCourse.description
+                      : "Açıklama Mevcut Değil."}
+                    {console.log(fetchCourseDepartment(selectedCourse.id))}
+                  </ModalBody>
+                  <ModalFooter>
+                    <Button
+                      colorScheme="blue"
+                      mr={3}
+                      onClick={onDescriptionModalClose}
+                    >
+                      Tamam
+                    </Button>
+                  </ModalFooter>
+                </ModalContent>
+              </Modal>
+            )}
           </Box>
           <Box position={"absolute"} borderRadius={"md"}>
             <CourseEdit

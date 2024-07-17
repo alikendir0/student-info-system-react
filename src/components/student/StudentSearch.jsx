@@ -16,6 +16,7 @@ import {
 } from "@chakra-ui/react";
 import { Form } from "react-router-dom";
 import axios from "axios";
+import { For } from "solid-js";
 
 function StudentSearch({ isOpen, onClose, fetchStudents, search, Toast }) {
   const [searchParameters, setSearchParameters] = useState({});
@@ -144,7 +145,7 @@ function StudentSearch({ isOpen, onClose, fetchStudents, search, Toast }) {
               value={searchParameters.studentNo || ""}
             />
           </FormControl>
-          <FormControl>
+          <FormControl mb={4}>
             <FormLabel htmlFor="student-department">Bölüm</FormLabel>
             <Select
               name="departmentID"
@@ -158,6 +159,42 @@ function StudentSearch({ isOpen, onClose, fetchStudents, search, Toast }) {
                   {department.name}
                 </option>
               ))}
+            </Select>
+          </FormControl>
+          <FormControl id="period" mb={4}>
+            <FormLabel htmlFor="student-period">Yıl</FormLabel>
+            <Select
+              id="period-select"
+              variant="filled"
+              name="period"
+              value={searchParameters.period || ""}
+              onChange={handleInputChange}
+              placeholder="Dönem Seçiniz"
+            >
+              <option key={"1"} value={1}>
+                1. Sınıf Güz Dönemi
+              </option>
+              <option key={"2"} value={2}>
+                1. Sınıf Bahar Dönemi
+              </option>
+              <option key={"3"} value={3}>
+                2. Sınıf Güz Dönemi
+              </option>
+              <option key={"4"} value={4}>
+                2. Sınıf Bahar Dönemi
+              </option>
+              <option key={"5"} value={5}>
+                3. Sınıf Güz Dönemi
+              </option>
+              <option key={"6"} value={6}>
+                3. Sınıf Bahar Dönemi
+              </option>
+              <option key={"7"} value={7}>
+                4. Sınıf Güz Dönemi
+              </option>
+              <option key={"8"} value={8}>
+                4. Sınıf Bahar Dönemi
+              </option>
             </Select>
           </FormControl>
         </ModalBody>
