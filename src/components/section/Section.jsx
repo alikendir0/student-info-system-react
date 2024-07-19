@@ -134,7 +134,7 @@ function Section() {
                 onClose={onClose}
                 sectionData={{
                   id: sectionData.id,
-                  courseCode: sectionData.courseCode,
+                  courseCode: sectionData.course.code,
                   facultyID: sectionData.course.faculty.id,
                   instructorNo: sectionData.instructor.instructorNo,
                   capacity: sectionData.capacity,

@@ -51,6 +51,7 @@ function Course() {
       facultyID: "",
     },
   ]);
+  const [coursePeriod, setCoursePeriod] = useState();
 
   function Toast(e, status) {
     toastIdRef.current = toast({
@@ -62,6 +63,7 @@ function Course() {
 
   const handleCourseClick = (course) => {
     setSelectedCourse(course);
+    fetchCourseDepartment(course.id);
     onDescriptionModalOpen();
   };
 
@@ -71,7 +73,8 @@ function Course() {
         `http://localhost:3000/course/department/period/${courseID}`
       );
       const data = response.data.data;
-      return data;
+      console.log(data);
+      setCoursePeriod(data);
     } catch (error) {
       Toast("Bağlantı Hatası!", "error");
       console.error("Failed to fetch course department:", error);
@@ -178,7 +181,21 @@ function Course() {
                     {selectedCourse
                       ? selectedCourse.description
                       : "Açıklama Mevcut Değil."}
-                    {console.log(fetchCourseDepartment(selectedCourse.id))}
+                    <Box mt={4} mb={2}>
+                      Bölüm ve Dönem Bilgisi
+                    </Box>
+                    {coursePeriod &&
+                      coursePeriod.map((period) => (
+                        <Box key={period.id}>
+                          <Box>
+                            {period.departmentName} -
+                            {Math.ceil(period.period / 2)}. Yıl{" "}
+                            {period.period % 2 === 0 ? "Bahar" : "Güz"}{" "}
+                            Döneminden itibaren
+                          </Box>
+                          <Box></Box>
+                        </Box>
+                      ))}
                   </ModalBody>
                   <ModalFooter>
                     <Button

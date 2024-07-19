@@ -171,7 +171,9 @@ function Student() {
 
   const fetchSections = async () => {
     try {
-      const response = await axios.get(`http://localhost:3000/sections`);
+      const response = await axios.get(
+        `http://localhost:3000/sections/student/${checkedIDs[0]}`
+      );
       const data = response.data.data;
       setSections(data);
     } catch (error) {
@@ -534,7 +536,7 @@ function Student() {
                                 {section.course.code}
                               </Td>
                               <Td textAlign={"center"}>
-                                {section.course.faculty.name}
+                                {section.course["faculty"].name}
                               </Td>
                               <Td textAlign={"center"}>
                                 {section["section-sessions"].map((session) => (
