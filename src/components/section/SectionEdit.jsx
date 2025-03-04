@@ -137,51 +137,48 @@ function SectionEdit({ isOpen, onClose, sectionData, fetchSections, Toast }) {
     console.log(section);
   };
 
-  // const addSession = () => {
-  //   const sessions = section["section-sessions"];
-  //   const maxId = sessions.reduce(
-  //     (max, session) => Math.max(max, session.id),
-  //     0
-  //   );
-  //   sessions.push({
-  //     id: maxId + 1,
-  //     day: "",
-  //     hour: "",
-  //     roomNo: "",
-  //   });
-  //   setSection({ ...section, ["section-sessions"]: sessions });
-  // };
+  const addSession = () => {
+    const sessions = section["section-sessions"];
+    const maxId = sessions.reduce(
+      (max, session) => Math.max(max, session.id),
+      0
+    );
+    sessions.push({
+      id: maxId + 1,
+      day: "",
+      hour: "",
+      roomNo: "",
+    });
+    setSection({ ...section, ["section-sessions"]: sessions });
+  };
 
-  // const deleteSession = async (id) => {
-  //   if (section["section-sessions"].length === 1) {
-  //     Toast("Bir sınıfın en az bir oturumu olmalı!", "error");
-  //     return;
-  //   }
-  //   const sessions = section["section-sessions"];
-  //   const newSessions = sessions.filter((session) => session.id !== id);
-  //   console.log(newSessions);
-  //   setSection({ ...section, ["section-sessions"]: newSessions });
-  // };
+  const deleteSession = async (id) => {
+    if (section["section-sessions"].length === 1) {
+      Toast("Bir sınıfın en az bir oturumu olmalı!", "error");
+      return;
+    }
+    const sessions = section["section-sessions"];
+    const newSessions = sessions.filter((session) => session.id !== id);
+    console.log(newSessions);
+    setSection({ ...section, ["section-sessions"]: newSessions });
+  };
 
   const handleNumberInputChange = (field, e) => {
     setSection({ ...section, [field]: e });
   };
 
   const updateSection = async () => {
-    try {
-      const response = await axios.put(
-        `http://localhost:3000/section/${section.id}`,
-        section
-      );
-      if (response.status === 200) {
+    axios
+      .put(`http://localhost:3000/section/${section.id}`, section)
+      .then((response) => {
         onClose();
         fetchSections();
         Toast("Başarıyla Güncellendi!", "success");
-      }
-    } catch (error) {
-      Toast("Hata!", "error");
-      console.error("Failed to update section:", error);
-    }
+      })
+      .catch((error) => {
+        Toast(error.response.data.message, "error");
+        console.error("Failed to update section:", error);
+      });
   };
 
   return (
@@ -241,7 +238,7 @@ function SectionEdit({ isOpen, onClose, sectionData, fetchSections, Toast }) {
           {Array.from(section["section-sessions"]).map((session, index) => (
             <Stack key={session.id} spacing={4}>
               <FormControl mb={4}>
-                {/* <FormLabel>
+                <FormLabel>
                   <Stack direction="row">
                     <>Oturum {index + 1}</>
                     <button
@@ -259,7 +256,7 @@ function SectionEdit({ isOpen, onClose, sectionData, fetchSections, Toast }) {
                       -
                     </button>
                   </Stack>
-                </FormLabel> */}
+                </FormLabel>
                 <FormLabel mt={4} htmlFor="session-day">
                   Gün
                 </FormLabel>
@@ -286,7 +283,7 @@ function SectionEdit({ isOpen, onClose, sectionData, fetchSections, Toast }) {
                   colorScheme="teal"
                   name="hour-from"
                   onChange={(e) => handleSessionChange(e, index)}
-                  value={session.hour.split("-")[0]}
+                  value={session.hour ? session.hour.split("-")[0] : ""}
                 />
                 -
                 <Input
@@ -295,7 +292,7 @@ function SectionEdit({ isOpen, onClose, sectionData, fetchSections, Toast }) {
                   colorScheme="teal"
                   name="hour-to"
                   onChange={(e) => handleSessionChange(e, index)}
-                  value={session.hour.split("-")[1]}
+                  value={session.hour ? session.hour.split("-")[1] : ""}
                 />
               </FormControl>
               <FormControl mb={4}>

@@ -19,6 +19,7 @@ import {
 } from "@chakra-ui/react";
 import { useState } from "react";
 import axios from "axios";
+import { Form } from "react-router-dom";
 
 function StudentForm({ isOpen, onClose, onStudentAdded, Toast }) {
   const [studentData, setStudentData] = useState({
@@ -26,6 +27,7 @@ function StudentForm({ isOpen, onClose, onStudentAdded, Toast }) {
     lastName: "",
     id: "",
     departmentID: "",
+    period: 1,
   });
   const [departments, setDepartments] = useState([]);
   const toast = useToast();
@@ -160,6 +162,40 @@ function StudentForm({ isOpen, onClose, onStudentAdded, Toast }) {
                   {department.name}
                 </option>
               ))}
+            </Select>
+          </FormControl>
+          <FormControl id="period" mb={4}>
+            <FormLabel htmlFor="student-period">Dönem</FormLabel>
+            <Select
+              id="period-select"
+              variant="filled"
+              name="period"
+              onChange={(e) => handleInputChange(e, "period")}
+            >
+              <option key={"1"} value={1}>
+                1. Sınıf Güz Dönemi
+              </option>
+              <option key={"2"} value={2}>
+                1. Sınıf Bahar Dönemi
+              </option>
+              <option key={"3"} value={3}>
+                2. Sınıf Güz Dönemi
+              </option>
+              <option key={"4"} value={4}>
+                2. Sınıf Bahar Dönemi
+              </option>
+              <option key={"5"} value={5}>
+                3. Sınıf Güz Dönemi
+              </option>
+              <option key={"6"} value={6}>
+                3. Sınıf Bahar Dönemi
+              </option>
+              <option key={"7"} value={7}>
+                4. Sınıf Güz Dönemi
+              </option>
+              <option key={"8"} value={8}>
+                4. Sınıf Bahar Dönemi
+              </option>
             </Select>
           </FormControl>
         </ModalBody>

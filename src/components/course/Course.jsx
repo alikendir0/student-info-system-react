@@ -49,6 +49,10 @@ function Course() {
       id: "",
       code: "",
       facultyID: "",
+      description: "",
+      name: "",
+      facultyName: "",
+      courseDepartments: [],
     },
   ]);
   const [coursePeriod, setCoursePeriod] = useState();
@@ -273,6 +277,8 @@ function Course() {
                                   name: course.name,
                                   description: course.description,
                                   facultyID: course.facultyID,
+                                  facultyName: course.facultyName,
+                                  courseDepartments: course.courseDepartments,
                                 });
                               }}
                             >

@@ -27,14 +27,28 @@ import {
   Input,
   Select,
   Textarea,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
+  NumberIncrementStepper,
+  NumberDecrementStepper,
+  Stack,
 } from "@chakra-ui/react";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Form } from "react-router-dom";
 
 function CourseEdit({ isOpen, onClose, courseData, fetchCourses, Toast }) {
-  const [course, setCourse] = useState({});
+  const [course, setCourse] = useState({
+    id: "",
+    code: "",
+    facultyID: "",
+    description: "",
+    name: "",
+    facultyName: "",
+    courseDepartments: [],
+  });
   const [faculties, setFaculties] = useState([]);
+  const [departments, setDepartments] = useState([]);
 
   const fetchFaculties = async () => {
     try {
@@ -47,8 +61,21 @@ function CourseEdit({ isOpen, onClose, courseData, fetchCourses, Toast }) {
     }
   };
 
+  const fetchDepartments = async () => {
+    try {
+      const response = await axios.get(`http://localhost:3000/departments`);
+      const data = response.data.data;
+      setDepartments(data);
+    } catch (error) {
+      console.error("Failed to fetch departments:", error);
+      setTimeout(fetchDepartments, 5000);
+    }
+  };
+
   useEffect(() => {
     setCourse(courseData);
+    fetchFaculties();
+    fetchDepartments();
   }, [courseData]);
 
   const handleInputChange = (e) => {
@@ -56,13 +83,52 @@ function CourseEdit({ isOpen, onClose, courseData, fetchCourses, Toast }) {
     setCourse({ ...course, [name]: value });
   };
 
-  useEffect(() => {
-    setCourse(courseData);
-    fetchFaculties();
-  }, [courseData]);
+  const handleDepartmentChange = (e, index) => {
+    const { name, value } = e.target;
+    const updatedCourseDepartments = [...course.courseDepartments];
+    updatedCourseDepartments[index] = {
+      ...updatedCourseDepartments[index],
+      [name]: value,
+    };
+    setCourse({ ...course, courseDepartments: updatedCourseDepartments });
+  };
+
+  const handlePeriodChange = (value, index) => {
+    const updatedCourseDepartments = [...course.courseDepartments];
+    updatedCourseDepartments[index] = {
+      ...updatedCourseDepartments[index],
+      period: value,
+    };
+    setCourse({ ...course, courseDepartments: updatedCourseDepartments });
+  };
+
+  const addDepartment = () => {
+    const departments = course.courseDepartments;
+    const maxId = departments.reduce(
+      (max, department) => Math.max(max, department.id),
+      0
+    );
+    departments.push({
+      id: maxId + 1,
+      departmentID: "",
+      period: 1,
+    });
+    setCourse({ ...course, courseDepartments: departments });
+  };
+
+  const deleteDepartment = (id) => {
+    if (course.courseDepartments.length === 1) {
+      Toast("Bir dersin en az bir bölüm olmalı!", "error");
+      return;
+    }
+    const departments = course.courseDepartments;
+    const newDepartments = departments.filter(
+      (department) => department.id !== id
+    );
+    setCourse({ ...course, courseDepartments: newDepartments });
+  };
 
   const updateCourse = async () => {
-    console.log(courseData);
     try {
       const response = await axios.put(
         `http://localhost:3000/course/${course.id}`,
@@ -78,6 +144,7 @@ function CourseEdit({ isOpen, onClose, courseData, fetchCourses, Toast }) {
       console.error("Error updating course:", error);
     }
   };
+
   return (
     <>
       <Modal isOpen={isOpen} onClose={onClose}>
@@ -125,7 +192,7 @@ function CourseEdit({ isOpen, onClose, courseData, fetchCourses, Toast }) {
                 />
               </FormControl>
 
-              <FormControl id="faculty">
+              <FormControl id="faculty" mb={4}>
                 <FormLabel htmlFor="course-faculty">Fakülte</FormLabel>
                 <Select
                   id="faculty-select"
@@ -141,6 +208,77 @@ function CourseEdit({ isOpen, onClose, courseData, fetchCourses, Toast }) {
                   ))}
                 </Select>
               </FormControl>
+
+              {course.courseDepartments.length === 0 ? (
+                <Button onClick={addDepartment}>Bölüm Ekle</Button>
+              ) : (
+                course.courseDepartments.map((courseDepartment, index) => (
+                  <Stack key={courseDepartment.id} mb={4}>
+                    <FormControl mb={4}>
+                      <Flex>
+                        <FormControl
+                          id={`department-${index}`}
+                          mb={4}
+                          flex="2"
+                          mr={4}
+                        >
+                          <FormLabel>
+                            <Stack direction="row">
+                              <>Bölüm {index + 1}</>
+                              <button
+                                onClick={addDepartment}
+                                className="select-all-button"
+                                type="button"
+                              >
+                                +
+                              </button>
+                              <button
+                                onClick={() =>
+                                  deleteDepartment(courseDepartment.id)
+                                }
+                                className="select-all-button"
+                                type="button"
+                              >
+                                -
+                              </button>
+                            </Stack>
+                          </FormLabel>
+
+                          <Select
+                            name="departmentID"
+                            placeholder="Bölüm Seçin"
+                            value={courseDepartment.departmentID}
+                            onChange={(e) => handleDepartmentChange(e, index)}
+                          >
+                            {departments.map((department) => (
+                              <option key={department.id} value={department.id}>
+                                {department.name}
+                              </option>
+                            ))}
+                          </Select>
+                        </FormControl>
+                        <FormControl id={`period-${index}`} mb={4} flex="1">
+                          <FormLabel>Dönem</FormLabel>
+                          <NumberInput
+                            min={1}
+                            max={8}
+                            value={courseDepartment.period}
+                            onChange={(value) =>
+                              handlePeriodChange(value, index)
+                            }
+                          >
+                            <NumberInputField name="period" />
+                            <NumberInputStepper>
+                              <NumberIncrementStepper />
+                              <NumberDecrementStepper />
+                            </NumberInputStepper>
+                          </NumberInput>
+                        </FormControl>
+                      </Flex>
+                    </FormControl>
+                  </Stack>
+                ))
+              )}
             </ModalBody>
           ) : (
             <Spinner />

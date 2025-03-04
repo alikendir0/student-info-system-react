@@ -16,7 +16,6 @@ import {
 } from "@chakra-ui/react";
 import { Form } from "react-router-dom";
 import axios from "axios";
-import { For } from "solid-js";
 
 function StudentSearch({ isOpen, onClose, fetchStudents, search, Toast }) {
   const [searchParameters, setSearchParameters] = useState({});
